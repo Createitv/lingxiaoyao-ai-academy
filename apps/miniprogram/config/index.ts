@@ -1,8 +1,12 @@
 import { defineConfig } from "@tarojs/cli";
+import path from "path";
 
 export default defineConfig({
   projectName: "lingxiaoyao-miniprogram",
   date: "2026-03-04",
+  alias: {
+    "@": path.resolve(__dirname, "..", "src"),
+  },
   designWidth: 750,
   deviceRatio: {
     640: 2.34 / 2,

@@ -2,7 +2,7 @@ import { request } from "@/utils/request";
 import type { Article } from "@workspace/types";
 
 interface ArticleDetail extends Article {
-  source: string; // Markdown content
+  content: string; // Markdown content
 }
 
 export async function getArticles(): Promise<Article[]> {

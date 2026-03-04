@@ -13,7 +13,7 @@ interface ChapterData {
   videoId: string;
   isFree: boolean;
   duration: number;
-  source?: string;
+  content?: string;
 }
 
 export default function ChapterPage() {
@@ -120,9 +120,9 @@ export default function ChapterPage() {
         )}
 
         {/* Chapter Content (Markdown) */}
-        {chapter.source && (
+        {chapter.content && (
           <View className="content-area">
-            <RichContent source={chapter.source} />
+            <RichContent source={chapter.content} />
           </View>
         )}
 

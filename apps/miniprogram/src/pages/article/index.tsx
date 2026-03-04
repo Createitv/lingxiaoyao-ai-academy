@@ -14,7 +14,7 @@ interface ArticleData {
   date: string;
   tags: string[];
   readingTime: number;
-  source: string;
+  content: string;
 }
 
 export default function ArticlePage() {
@@ -89,7 +89,7 @@ export default function ArticlePage() {
 
       {/* Article Content */}
       <View className="article-content">
-        <RichContent source={article.source} />
+        <RichContent source={article.content} />
       </View>
 
       {/* Progress Button */}

@@ -16,7 +16,7 @@ interface CourseListItem {
 }
 
 interface CourseDetail extends CourseListItem {
-  source?: string; // Markdown content
+  content?: string; // Markdown content
 }
 
 interface ChapterContent {
@@ -24,7 +24,7 @@ interface ChapterContent {
   videoId: string;
   isFree: boolean;
   duration: number;
-  source?: string; // Markdown content
+  content?: string; // Markdown content
 }
 
 export async function getCourses(): Promise<CourseListItem[]> {
