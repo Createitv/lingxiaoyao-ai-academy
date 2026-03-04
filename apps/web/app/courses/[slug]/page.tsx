@@ -4,6 +4,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getCourseBySlug, getAllCourseSlugs } from "@/lib/content/courses";
+import { getCurrentUser } from "@/lib/auth/session";
+import { hasCoursePurchased } from "@/lib/db/user-courses";
 import { Button } from "@workspace/ui/components/button";
 
 interface CoursePageProps {
@@ -38,6 +40,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
+  const user = await getCurrentUser();
+  const purchased = user ? await hasCoursePurchased(user.id, course.id) : false;
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -61,7 +66,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 <div
                   key={chapter.index}
                   className={`flex items-center gap-3 p-3 rounded-lg border ${
-                    chapter.isFree
+                    chapter.isFree || purchased
                       ? "hover:bg-muted cursor-pointer"
                       : "opacity-70"
                   }`}
@@ -70,7 +75,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                     {idx + 1}
                   </span>
                   <div className="flex-1">
-                    {chapter.isFree ? (
+                    {chapter.isFree || purchased ? (
                       <Link
                         href={`/courses/${slug}/${chapter.index}`}
                         className="font-medium hover:text-primary transition-colors"
@@ -88,6 +93,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
                     {chapter.isFree ? (
                       <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                         免费
+                      </span>
+                    ) : purchased ? (
+                      <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                        已解锁
                       </span>
                     ) : (
                       <span className="text-muted-foreground">🔒</span>
@@ -126,11 +135,24 @@ export default async function CoursePage({ params }: CoursePageProps) {
               <div>✅ 配套图文教程</div>
               <div>✅ 永久有效</div>
             </div>
-            <Button className="w-full" size="lg" asChild>
-              <Link href={`/payment/confirm?courseSlug=${slug}`}>
-                {course.price === 0 ? "免费获取" : "立即购买"}
-              </Link>
-            </Button>
+            {purchased ? (
+              <>
+                <div className="px-3 py-2 rounded-lg bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-center text-sm font-medium">
+                  已购买
+                </div>
+                <Button className="w-full" size="lg" asChild>
+                  <Link href={`/courses/${slug}/${course.chapters[0]?.index ?? 1}`}>
+                    开始学习
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <Button className="w-full" size="lg" asChild>
+                <Link href={`/payment/confirm?courseSlug=${slug}`}>
+                  {course.price === 0 ? "免费获取" : "立即购买"}
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

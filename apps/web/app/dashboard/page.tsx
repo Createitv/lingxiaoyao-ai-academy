@@ -40,6 +40,15 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      <div className="mb-6 flex gap-4 text-sm">
+        <Link
+          href="/dashboard/orders"
+          className="text-muted-foreground hover:text-foreground transition-colors"
+        >
+          我的订单 →
+        </Link>
+      </div>
+
       {/* My Courses */}
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-4">我的课程</h2>

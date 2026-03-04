@@ -217,6 +217,12 @@ export function SiteHeader() {
                 >
                   学习中心
                 </Link>
+                <Link
+                  href="/dashboard/orders"
+                  className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+                >
+                  我的订单
+                </Link>
                 <div className="my-1 h-px bg-border" />
                 <button
                   onClick={async () => {
@@ -273,6 +279,12 @@ export function SiteHeader() {
                   className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 >
                   学习中心
+                </Link>
+                <Link
+                  href="/dashboard/orders"
+                  className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                >
+                  我的订单
                 </Link>
               </div>
             )}
