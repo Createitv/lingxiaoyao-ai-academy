@@ -55,7 +55,8 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 构建时需要的环境变量（静态导出不需要运行时服务端变量）
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           NEXT_PUBLIC_SITE_URL: https://lingxiaoyao.cn
           NEXT_PUBLIC_SITE_NAME: 林逍遥AI
           BUILD_TARGET: desktop
@@ -69,7 +70,136 @@ jobs:
 
             ## 下载说明
             - **macOS**: 下载 `.dmg` 文件（Intel + Apple Silicon 通用版）
-            - **Windows**: 下载 `.msi` 安装包或 `.exe` 安装程序
+            - **Windows**: 下载 `.exe` 安装程序
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Upload macOS artifacts
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-artifacts
+          path: |
+            apps/desktop/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            apps/desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app.tar.gz
+            apps/desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app.tar.gz.sig
+
+      - name: Upload Windows artifacts
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: |
+            apps/desktop/src-tauri/target/release/bundle/nsis/*.exe
+            apps/desktop/src-tauri/target/release/bundle/nsis/*.exe.sig
+
+  upload-cos:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-artifacts
+          path: artifacts/macos
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-artifacts
+          path: artifacts/windows
+
+      - name: Get version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME:-v0.0.1}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION"
+
+      - name: List artifacts
+        run: find artifacts/ -type f
+
+      - name: Install coscmd
+        run: pip install coscmd
+
+      - name: Configure coscmd
+        run: |
+          coscmd config \
+            -a ${{ secrets.TENCENT_SECRET_ID }} \
+            -s ${{ secrets.TENCENT_SECRET_KEY }} \
+            -b ${{ secrets.TENCENT_COS_BUCKET }} \
+            -r ${{ secrets.TENCENT_COS_REGION }}
+
+      - name: Generate latest.json
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          COS_BASE="https://${{ secrets.TENCENT_COS_BUCKET }}.cos.${{ secrets.TENCENT_COS_REGION }}.myqcloud.com"
+
+          # Read signature files
+          MAC_SIG=$(cat artifacts/macos/*.app.tar.gz.sig 2>/dev/null || echo "")
+          WIN_SIG=$(cat artifacts/windows/*.exe.sig 2>/dev/null || echo "")
+
+          # Find artifact filenames
+          MAC_BUNDLE=$(basename artifacts/macos/*.app.tar.gz 2>/dev/null || echo "")
+          WIN_BUNDLE=$(basename artifacts/windows/*-setup.exe 2>/dev/null | head -1 || echo "")
+
+          cat > latest.json << 'EOJSON'
+          {
+            "version": "PLACEHOLDER_VERSION",
+            "notes": "林逍遥AI PLACEHOLDER_VERSION",
+            "pub_date": "PLACEHOLDER_DATE",
+            "platforms": {
+              "darwin-universal": {
+                "signature": "PLACEHOLDER_MAC_SIG",
+                "url": "PLACEHOLDER_COS_BASE/desktop/releases/PLACEHOLDER_VERSION/PLACEHOLDER_MAC_BUNDLE"
+              },
+              "windows-x86_64": {
+                "signature": "PLACEHOLDER_WIN_SIG",
+                "url": "PLACEHOLDER_COS_BASE/desktop/releases/PLACEHOLDER_VERSION/PLACEHOLDER_WIN_BUNDLE"
+              }
+            }
+          }
+          EOJSON
+
+          # Replace placeholders with actual values
+          sed -i "s|PLACEHOLDER_VERSION|$VERSION|g" latest.json
+          sed -i "s|PLACEHOLDER_DATE|$(date -u +%Y-%m-%dT%H:%M:%SZ)|g" latest.json
+          sed -i "s|PLACEHOLDER_MAC_SIG|$MAC_SIG|g" latest.json
+          sed -i "s|PLACEHOLDER_WIN_SIG|$WIN_SIG|g" latest.json
+          sed -i "s|PLACEHOLDER_COS_BASE|$COS_BASE|g" latest.json
+          sed -i "s|PLACEHOLDER_MAC_BUNDLE|$MAC_BUNDLE|g" latest.json
+          sed -i "s|PLACEHOLDER_WIN_BUNDLE|$WIN_BUNDLE|g" latest.json
+
+          echo "Generated latest.json:"
+          cat latest.json
+
+      - name: Upload versioned release artifacts to COS
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Upload macOS artifacts (update bundle + signature + DMG)
+          for f in artifacts/macos/*.app.tar.gz artifacts/macos/*.app.tar.gz.sig artifacts/macos/*.dmg; do
+            [ -f "$f" ] && coscmd upload "$f" "/desktop/releases/$VERSION/$(basename "$f")"
+          done
+
+          # Upload Windows artifacts (NSIS exe + signature)
+          for f in artifacts/windows/*.exe artifacts/windows/*.exe.sig; do
+            [ -f "$f" ] && coscmd upload "$f" "/desktop/releases/$VERSION/$(basename "$f")"
+          done
+
+      - name: Upload latest installers to COS (for website download links)
+        run: |
+          # Overwrite /desktop/latest/ with the newest installers (stable filenames)
+          for f in artifacts/macos/*.dmg; do
+            [ -f "$f" ] && coscmd upload "$f" "/desktop/latest/林逍遥AI_universal.dmg"
+          done
+          for f in artifacts/windows/*-setup.exe; do
+            [ -f "$f" ] && coscmd upload "$f" "/desktop/latest/林逍遥AI_x64-setup.exe"
+          done
+
+      - name: Upload latest.json to COS
+        run: coscmd upload latest.json /desktop/latest.json

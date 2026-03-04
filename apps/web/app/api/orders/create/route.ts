@@ -77,11 +77,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Validate Alipay credentials before creating order
-  const alipayAppId = process.env.ALIPAY_APP_ID;
-  const alipayPrivateKey = process.env.ALIPAY_APP_PRIVATE_KEY;
-  const alipayPublicKey = process.env.ALIPAY_PUBLIC_KEY;
-  if (!alipayAppId || !alipayPrivateKey || !alipayPublicKey) {
+  // Validate Alipay SDK (certificate mode)
+  const { getAlipaySdk } = await import("@/lib/alipay/sdk");
+  const alipaySdk = await getAlipaySdk();
+  if (!alipaySdk) {
     console.error("[Orders] Alipay credentials missing");
     return NextResponse.json(
       { success: false, error: "支付配置异常，请联系客服" },
@@ -96,18 +95,6 @@ export async function POST(request: NextRequest) {
       status: "pending",
       amount: course.price,
     },
-  });
-
-  const { AlipaySdk } = await import("alipay-sdk");
-
-  const alipaySdk = new AlipaySdk({
-    appId: alipayAppId,
-    privateKey: alipayPrivateKey,
-    alipayPublicKey: alipayPublicKey,
-    gateway:
-      process.env.ALIPAY_SANDBOX === "true"
-        ? "https://openapi-sandbox.dl.alipaydev.com/gateway.do"
-        : "https://openapi.alipay.com/gateway.do",
   });
 
   const payUrl = alipaySdk.pageExec("alipay.trade.page.pay", {

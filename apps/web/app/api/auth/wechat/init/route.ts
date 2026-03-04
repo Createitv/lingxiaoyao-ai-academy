@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/rate-limit";
 
-// 判断是否在微信内置浏览器中
-function isWechatBrowser(userAgent: string): boolean {
-  return /MicroMessenger/i.test(userAgent);
-}
-
 // Generates the WeChat OAuth authorization URL and redirects user to it.
-// - 微信内置浏览器：使用 oauth2/authorize（公众号网页授权）
-// - 普通浏览器（Chrome 等）：使用 qrconnect（开放平台扫码登录）
+// 使用开放平台扫码登录（qrconnect）
 export async function GET(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -28,30 +22,15 @@ export async function GET(request: NextRequest) {
     process.env.WECHAT_REDIRECT_URI ?? "",
   );
   const state = encodeURIComponent(redirect);
-  const userAgent = request.headers.get("user-agent") ?? "";
 
-  let authUrl: string;
-  if (isWechatBrowser(userAgent)) {
-    // 微信内置浏览器：公众号网页授权
-    authUrl =
-      `https://open.weixin.qq.com/connect/oauth2/authorize` +
-      `?appid=${appId}` +
-      `&redirect_uri=${redirectUri}` +
-      `&response_type=code` +
-      `&scope=snsapi_userinfo` +
-      `&state=${state}` +
-      `#wechat_redirect`;
-  } else {
-    // 普通浏览器（PC/手机）：开放平台扫码登录
-    authUrl =
-      `https://open.weixin.qq.com/connect/qrconnect` +
-      `?appid=${appId}` +
-      `&redirect_uri=${redirectUri}` +
-      `&response_type=code` +
-      `&scope=snsapi_login` +
-      `&state=${state}` +
-      `#wechat_redirect`;
-  }
+  const authUrl =
+    `https://open.weixin.qq.com/connect/qrconnect` +
+    `?appid=${appId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&response_type=code` +
+    `&scope=snsapi_login` +
+    `&state=${state}` +
+    `#wechat_redirect`;
 
   return NextResponse.redirect(authUrl);
 }

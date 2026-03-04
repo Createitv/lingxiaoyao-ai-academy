@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 
+const COS_BASE_URL = process.env.NEXT_PUBLIC_COS_BASE_URL;
+
 const footerLinks = {
   学习: [
     { href: "/courses", label: "课程" },
@@ -13,11 +15,28 @@ const footerLinks = {
   ],
 };
 
+const downloadLinks = COS_BASE_URL
+  ? [
+      {
+        href: `${COS_BASE_URL}/desktop/latest/林逍遥AI_universal.dmg`,
+        label: "macOS 下载",
+        note: "Intel + Apple Silicon",
+      },
+      {
+        href: `${COS_BASE_URL}/desktop/latest/林逍遥AI_x64-setup.exe`,
+        label: "Windows 下载",
+        note: "64 位",
+      },
+    ]
+  : null;
+
 export function SiteFooter() {
   return (
     <footer className="border-t bg-muted/40">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div
+          className={`grid grid-cols-2 gap-8 ${downloadLinks ? "md:grid-cols-5" : "md:grid-cols-4"}`}
+        >
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2">
@@ -28,7 +47,9 @@ export function SiteFooter() {
                 height={28}
                 className="h-7 w-7 rounded-full object-cover"
               />
-              <span className="text-lg font-bold tracking-tight">林逍遥 AI</span>
+              <span className="text-lg font-bold tracking-tight">
+                林逍遥 AI
+              </span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
               用 AI，做更好的自己。
@@ -55,6 +76,30 @@ export function SiteFooter() {
               </ul>
             </div>
           ))}
+
+          {/* Desktop download */}
+          {downloadLinks && (
+            <div>
+              <h3 className="text-sm font-semibold">桌面客户端</h3>
+              <ul className="mt-3 space-y-2">
+                {downloadLinks.map((dl) => (
+                  <li key={dl.href}>
+                    <a
+                      href={dl.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {dl.label}
+                    </a>
+                    <span className="ml-1 text-xs text-muted-foreground/60">
+                      {dl.note}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* WeChat */}
           <div>

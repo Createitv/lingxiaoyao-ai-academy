@@ -26,23 +26,15 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // 1. Validate Alipay credentials are configured
-  const alipayAppId = process.env.ALIPAY_APP_ID;
-  const alipayPrivateKey = process.env.ALIPAY_APP_PRIVATE_KEY;
-  const alipayPublicKey = process.env.ALIPAY_PUBLIC_KEY;
-  if (!alipayAppId || !alipayPrivateKey || !alipayPublicKey) {
+  // 1. Validate Alipay SDK (certificate mode)
+  const { getAlipaySdk } = await import("@/lib/alipay/sdk");
+  const alipaySdk = await getAlipaySdk();
+  if (!alipaySdk) {
     console.error("[Alipay Webhook] Alipay credentials not configured");
     return new Response("fail", { status: 500 });
   }
 
   // 2. Verify RSA2 signature (防伪造)
-  const { AlipaySdk } = await import("alipay-sdk");
-
-  const alipaySdk = new AlipaySdk({
-    appId: alipayAppId,
-    privateKey: alipayPrivateKey,
-    alipayPublicKey: alipayPublicKey,
-  });
 
   const isValid = alipaySdk.checkNotifySign(payload);
   if (!isValid) {

@@ -21,12 +21,13 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' data: https://*.myqcloud.com https://*.vod2.myqcloud.com; connect-src 'self' https://lingxiaoyao.cn https://api.weixin.qq.com; media-src 'self' https://*.vod2.myqcloud.com"
+      "csp": "default-src 'self'; img-src 'self' data: https://*.myqcloud.com https://*.vod2.myqcloud.com; connect-src 'self' https://lingxiaoyao.cn https://api.weixin.qq.com https://*.cos.myqcloud.com; media-src 'self' https://*.vod2.myqcloud.com"
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["dmg", "nsis"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -43,6 +44,12 @@
     },
     "shell": {
       "open": true
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDRDOTYwMjM5QTI0NEVGMkQKUldRdDcwU2lPUUtXVEhMOENuVnlHN05NelFhUXZEKzFmRDFqam8vckZkcW1LbUtjazRhRk93WFQK",
+      "endpoints": [
+        "https://lingxiaoyao-1308220446.cos.ap-shanghai.myqcloud.com/desktop/latest.json"
+      ]
     }
   }
 }

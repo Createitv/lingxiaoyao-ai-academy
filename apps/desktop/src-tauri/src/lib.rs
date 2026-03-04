@@ -6,8 +6,20 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let handle = app.handle().clone();
+
+            // Register updater plugin with custom target for universal macOS binary
+            #[cfg(desktop)]
+            {
+                let mut updater_builder = tauri_plugin_updater::Builder::new();
+                #[cfg(target_os = "macos")]
+                {
+                    updater_builder = updater_builder.target("darwin-universal");
+                }
+                app.handle().plugin(updater_builder.build())?;
+            }
 
             // Register the deep link handler for lingxiaoyao:// scheme
             app.deep_link().on_open_url(move |event| {
