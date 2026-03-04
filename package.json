@@ -7,10 +7,18 @@
     "dev": "turbo run dev",
     "dev:web": "turbo run dev --filter=web",
     "dev:app": "turbo run dev --filter=desktop",
+    "dev:mp": "turbo run dev --filter=miniprogram",
+    "build:mp": "turbo run build --filter=miniprogram",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "build:desktop": "BUILD_TARGET=desktop turbo run build --filter=web",
     "search:index": "tsx scripts/build-search-index.ts"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19",
+      "@types/react-dom": "^19"
+    }
   },
   "devDependencies": {
     "turbo": "^2.0.0",
