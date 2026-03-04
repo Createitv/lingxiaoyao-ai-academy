@@ -2,7 +2,7 @@ import Taro from "@tarojs/taro";
 import type { ApiResponse } from "@workspace/types";
 
 // TODO: Change to your production API URL
-const BASE_URL = "https://lingxiaoyao.cn";
+export const BASE_URL = "https://lingxiaoyao.cn";
 
 const TOKEN_KEY = "lxy_token";
 
@@ -34,7 +34,7 @@ export async function request<T = unknown>(
   const token = getToken();
 
   if (needAuth && !token) {
-    Taro.navigateTo({ url: "/pages/profile/index" });
+    Taro.switchTab({ url: "/pages/profile/index" });
     return { success: false, error: "请先登录" };
   }
 

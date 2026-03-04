@@ -94,7 +94,7 @@ export default function ProfilePage() {
 
       <View className="menu-section">
         <View className="menu-item">
-          <Text className="menu-label">关于凌逍遥 AI</Text>
+          <Text className="menu-label">关于林逍遥 AI</Text>
           <Text className="menu-arrow">&gt;</Text>
         </View>
         <View className="menu-item">
@@ -114,7 +114,7 @@ export default function ProfilePage() {
 
       {/* Footer */}
       <View className="footer">
-        <Text className="footer-text">凌逍遥 AI - 用 AI，做更好的自己</Text>
+        <Text className="footer-text">林逍遥 AI - 用 AI，做更好的自己</Text>
         <Text className="footer-version">v1.0.0</Text>
       </View>
     </View>

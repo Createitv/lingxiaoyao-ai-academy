@@ -1,6 +1,6 @@
 .courses-page {
   height: 100vh;
-  background: #f5f5f5;
+  background: #F5F0EB;
 }
 
 .loading-container {
@@ -11,7 +11,7 @@
 
   .loading-text {
     font-size: 28px;
-    color: #999;
+    color: #A39E99;
   }
 }
 
@@ -22,14 +22,14 @@
     display: block;
     font-size: 40px;
     font-weight: 700;
-    color: #333;
+    color: #1A1915;
     margin-bottom: 12px;
   }
 
   .page-subtitle {
     display: block;
     font-size: 26px;
-    color: #666;
+    color: #6B6560;
   }
 }
 
@@ -41,7 +41,7 @@
     border-radius: 16px;
     overflow: hidden;
     margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px rgba(26, 25, 21, 0.06);
 
     .course-cover {
       width: 100%;
@@ -51,7 +51,7 @@
     .course-cover-placeholder {
       width: 100%;
       height: 320px;
-      background: linear-gradient(135deg, #1677ff, #0958d9);
+      background: linear-gradient(135deg, #D97757, #C4613F);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -70,14 +70,14 @@
         display: block;
         font-size: 32px;
         font-weight: 600;
-        color: #333;
+        color: #1A1915;
         margin-bottom: 12px;
       }
 
       .course-desc {
         display: block;
         font-size: 26px;
-        color: #666;
+        color: #6B6560;
         margin-bottom: 20px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -93,13 +93,13 @@
 
         .course-chapters {
           font-size: 24px;
-          color: #999;
+          color: #A39E99;
         }
 
         .course-price {
           font-size: 32px;
           font-weight: 600;
-          color: #f5222d;
+          color: #D97757;
         }
       }
     }
@@ -112,6 +112,6 @@
 
   .empty-text {
     font-size: 28px;
-    color: #999;
+    color: #A39E99;
   }
 }

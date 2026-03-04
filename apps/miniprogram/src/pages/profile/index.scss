@@ -1,11 +1,11 @@
 .profile-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #F5F0EB;
 }
 
 .user-card {
   padding: 60px 30px 40px;
-  background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+  background: linear-gradient(135deg, #D97757 0%, #C4613F 100%);
 
   .user-info {
     display: flex;
@@ -74,7 +74,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 28px 30px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #E8E2DC;
 
     &:last-child {
       border-bottom: none;
@@ -82,12 +82,12 @@
 
     .menu-label {
       font-size: 28px;
-      color: #333;
+      color: #1A1915;
     }
 
     .menu-arrow {
       font-size: 28px;
-      color: #ccc;
+      color: #A39E99;
     }
   }
 }
@@ -116,12 +116,12 @@
   .footer-text {
     display: block;
     font-size: 24px;
-    color: #999;
+    color: #A39E99;
     margin-bottom: 8px;
   }
 
   .footer-version {
     font-size: 20px;
-    color: #ccc;
+    color: #C8C3BE;
   }
 }

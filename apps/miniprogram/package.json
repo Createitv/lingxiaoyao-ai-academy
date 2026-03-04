@@ -2,7 +2,7 @@
   "name": "miniprogram",
   "version": "1.0.0",
   "private": true,
-  "description": "凌逍遥 AI 教育平台小程序",
+  "description": "林逍遥 AI 教育平台小程序",
   "templateInfo": {
     "name": "default",
     "typescript": true,

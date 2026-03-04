@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useRouter } from "@tarojs/taro";
 import { getCourseBySlug } from "@/services/courses";
-import { payForCourse } from "@/services/orders";
+import { claimFreeCourse } from "@/services/orders";
 import { isLoggedIn, login } from "@/services/auth";
+import { getToken, BASE_URL } from "@/utils/request";
 import "./index.scss";
 
 interface ChapterItem {
@@ -51,13 +52,29 @@ export default function CourseDetailPage() {
       await login();
     }
 
-    setPurchasing(true);
-    const success = await payForCourse(slug);
-    setPurchasing(false);
+    if (!course) return;
 
-    if (success) {
-      loadCourse();
+    // Free course: claim directly via API
+    if (course.price === 0) {
+      setPurchasing(true);
+      const success = await claimFreeCourse(slug);
+      setPurchasing(false);
+      if (success) loadCourse();
+      return;
     }
+
+    // Paid course: open web payment page in webview
+    const token = getToken();
+    if (!token) {
+      Taro.showToast({ title: "请先登录", icon: "none" });
+      return;
+    }
+
+    const redirect = encodeURIComponent(`/payment/confirm?courseSlug=${slug}`);
+    const paymentUrl = `${BASE_URL}/api/auth/token-login?token=${token}&redirect=${redirect}`;
+    Taro.navigateTo({
+      url: `/pages/webview/index?url=${encodeURIComponent(paymentUrl)}`,
+    });
   }
 
   function goToChapter(chapterIndex: number) {

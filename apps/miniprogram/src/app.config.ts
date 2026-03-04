@@ -8,17 +8,18 @@ export default defineAppConfig({
     "pages/article/index",
     "pages/dashboard/index",
     "pages/profile/index",
+    "pages/webview/index",
   ],
   window: {
     backgroundTextStyle: "light",
-    navigationBarBackgroundColor: "#fff",
-    navigationBarTitleText: "凌逍遥 AI",
+    navigationBarBackgroundColor: "#FFFCF9",
+    navigationBarTitleText: "林逍遥 AI",
     navigationBarTextStyle: "black",
   },
   tabBar: {
-    color: "#666666",
-    selectedColor: "#1677ff",
-    backgroundColor: "#ffffff",
+    color: "#A39E99",
+    selectedColor: "#D97757",
+    backgroundColor: "#FFFCF9",
     borderStyle: "black",
     list: [
       {

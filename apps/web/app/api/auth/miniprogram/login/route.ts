@@ -135,7 +135,17 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (err) {
-    console.error("[MiniProgram Login] Error:", err instanceof Error ? err.message : "unknown");
+    const message = err instanceof Error ? err.message : "unknown";
+    console.error("[MiniProgram Login] Error:", message);
+
+    // Return specific error for missing configuration to aid debugging
+    if (message.includes("credentials are not configured")) {
+      return NextResponse.json(
+        { success: false, error: "服务端小程序配置缺失，请检查环境变量" },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json(
       { success: false, error: "登录失败，请稍后重试" },
       { status: 500 },

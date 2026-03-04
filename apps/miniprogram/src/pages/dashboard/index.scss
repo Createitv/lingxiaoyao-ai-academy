@@ -1,6 +1,6 @@
 .dashboard-page {
   height: 100vh;
-  background: #f5f5f5;
+  background: #F5F0EB;
 }
 
 .loading-container {
@@ -11,13 +11,13 @@
 
   .loading-text {
     font-size: 28px;
-    color: #999;
+    color: #A39E99;
   }
 }
 
 .greeting {
   padding: 40px 30px 30px;
-  background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+  background: linear-gradient(135deg, #D97757 0%, #C4613F 100%);
 
   .greeting-text {
     display: block;
@@ -43,7 +43,7 @@
     display: block;
     font-size: 32px;
     font-weight: 600;
-    color: #333;
+    color: #1A1915;
     margin-bottom: 24px;
   }
 }
@@ -53,7 +53,7 @@
     display: flex;
     gap: 20px;
     padding: 20px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #E8E2DC;
 
     &:last-child {
       border-bottom: none;
@@ -69,7 +69,7 @@
       width: 160px;
       height: 100px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #1677ff, #0958d9);
+      background: linear-gradient(135deg, #D97757, #C4613F);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -91,20 +91,20 @@
         display: block;
         font-size: 28px;
         font-weight: 500;
-        color: #333;
+        color: #1A1915;
         margin-bottom: 12px;
       }
 
       .progress-bar-container {
         height: 8px;
-        background: #f0f0f0;
+        background: #E8E2DC;
         border-radius: 4px;
         margin-bottom: 8px;
         overflow: hidden;
 
         .progress-bar {
           height: 100%;
-          background: #52c41a;
+          background: #5BA06E;
           border-radius: 4px;
           transition: width 0.3s;
         }
@@ -112,7 +112,7 @@
 
       .progress-text {
         font-size: 22px;
-        color: #999;
+        color: #A39E99;
       }
     }
   }
@@ -125,14 +125,14 @@
   .empty-text {
     display: block;
     font-size: 28px;
-    color: #999;
+    color: #A39E99;
     margin-bottom: 20px;
   }
 
   .browse-btn {
     display: inline-flex;
     padding: 16px 48px;
-    background: #1677ff;
+    background: #D97757;
     border-radius: 32px;
 
     .browse-text {
@@ -147,7 +147,7 @@
     display: flex;
     align-items: center;
     padding: 16px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #E8E2DC;
     gap: 16px;
 
     &:last-child {
@@ -156,8 +156,8 @@
 
     .progress-type {
       font-size: 22px;
-      color: #1677ff;
-      background: rgba(22, 119, 255, 0.1);
+      color: #D97757;
+      background: rgba(217, 119, 87, 0.1);
       padding: 4px 16px;
       border-radius: 16px;
     }
@@ -165,12 +165,12 @@
     .progress-slug {
       flex: 1;
       font-size: 26px;
-      color: #333;
+      color: #1A1915;
     }
 
     .progress-date {
       font-size: 22px;
-      color: #999;
+      color: #A39E99;
     }
   }
 }

@@ -7,6 +7,22 @@ import { Button } from "@workspace/ui/components/button";
 
 type OrderStatus = "pending" | "paid" | "failed" | "refunded";
 
+function isInMiniProgram(): boolean {
+  if (typeof window === "undefined") return false;
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.includes("miniprogram") || (window as unknown as Record<string, unknown>).__wxjs_environment === "miniprogram";
+}
+
+function navigateBackToMiniProgram() {
+  try {
+    const wx = (window as unknown as Record<string, { navigateBack: (opts?: object) => void }>).wx;
+    wx?.navigateBack?.();
+  } catch {
+    // Fallback: close the webview window
+    window.close();
+  }
+}
+
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const orderIdFromUrl = searchParams.get("orderId");
@@ -15,6 +31,11 @@ function PaymentSuccessContent() {
   const [status, setStatus] = useState<OrderStatus>("pending");
   const [courseSlug, setCourseSlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [inMiniProgram, setInMiniProgram] = useState(false);
+
+  useEffect(() => {
+    setInMiniProgram(isInMiniProgram());
+  }, []);
 
   useEffect(() => {
     const id =
@@ -147,14 +168,22 @@ function PaymentSuccessContent() {
             课程已解锁，现在可以开始学习了。
           </p>
           <div className="flex gap-4 justify-center">
-            {courseSlug && (
-              <Button asChild size="lg">
-                <Link href={`/courses/${courseSlug}`}>开始学习</Link>
+            {inMiniProgram ? (
+              <Button size="lg" onClick={navigateBackToMiniProgram}>
+                返回小程序
               </Button>
+            ) : (
+              <>
+                {courseSlug && (
+                  <Button asChild size="lg">
+                    <Link href={`/courses/${courseSlug}`}>开始学习</Link>
+                  </Button>
+                )}
+                <Button asChild variant="outline" size="lg">
+                  <Link href="/dashboard">学习中心</Link>
+                </Button>
+              </>
             )}
-            <Button asChild variant="outline" size="lg">
-              <Link href="/dashboard">学习中心</Link>
-            </Button>
           </div>
         </>
       )}

@@ -7,7 +7,7 @@
     display: block;
     font-size: 32px;
     font-weight: 600;
-    color: #333;
+    color: #1A1915;
     margin-bottom: 24px;
   }
 }
@@ -23,12 +23,12 @@
 
     .reply-text {
       font-size: 24px;
-      color: #1677ff;
+      color: #D97757;
     }
 
     .cancel-reply {
       font-size: 24px;
-      color: #999;
+      color: #A39E99;
     }
   }
 
@@ -39,7 +39,7 @@
 
     .comment-input {
       flex: 1;
-      background: #f5f5f5;
+      background: #F5F0EB;
       border-radius: 12px;
       padding: 16px 20px;
       font-size: 26px;
@@ -47,7 +47,7 @@
     }
 
     .send-btn {
-      background: #1677ff;
+      background: #D97757;
       border-radius: 12px;
       padding: 16px 28px;
 
@@ -67,20 +67,20 @@
 .login-hint {
   padding: 30px;
   text-align: center;
-  background: #f5f5f5;
+  background: #F5F0EB;
   border-radius: 12px;
   margin-bottom: 24px;
 
   .hint-text {
     font-size: 26px;
-    color: #999;
+    color: #A39E99;
   }
 }
 
 .comment-list {
   .comment-item {
     padding: 20px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #E8E2DC;
 
     &:last-child {
       border-bottom: none;
@@ -108,7 +108,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: #1677ff;
+        background: #D97757;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -123,20 +123,20 @@
       .nickname {
         font-size: 26px;
         font-weight: 500;
-        color: #333;
+        color: #1A1915;
       }
     }
 
     .comment-time {
       font-size: 22px;
-      color: #999;
+      color: #A39E99;
     }
   }
 
   .comment-body {
     display: block;
     font-size: 28px;
-    color: #333;
+    color: #1A1915;
     line-height: 1.6;
     margin-bottom: 12px;
   }
@@ -147,7 +147,7 @@
 
     .action-btn {
       font-size: 22px;
-      color: #999;
+      color: #A39E99;
 
       &.delete {
         color: #ff4d4f;
@@ -159,7 +159,7 @@
     margin-left: 60px;
     margin-top: 16px;
     padding: 16px 20px;
-    background: #f5f5f5;
+    background: #F5F0EB;
     border-radius: 12px;
   }
 }
@@ -170,6 +170,6 @@
 
   .empty-text {
     font-size: 26px;
-    color: #999;
+    color: #A39E99;
   }
 }
