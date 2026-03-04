@@ -2694,6 +2694,13 @@ async function main() {
   }
 
   console.log("\nDone: " + updated + " articles updated.");
+
+  // Publish all beginner tutorials
+  const published = await prisma.article.updateMany({
+    where: { series: "Claude 入门", publishedAt: null },
+    data: { publishedAt: new Date() },
+  });
+  console.log("Published: " + published.count + " beginner articles.");
 }
 
 main()
