@@ -45,5 +45,9 @@ prisma/migrations/
 apps/web/public/search-index.json
 .vercel
 
-# Claude Code context
+# SWC cache
+.swc/
+
+# Claude Code
 CONTEXT.md
+.claude/

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@workspace/ui/components/button";
+import { ImageUpload } from "./image-upload";
 
 interface CourseData {
   id?: string;
@@ -32,13 +34,18 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSave(publish: boolean) {
+  async function handleSave(publish?: boolean) {
     setSaving(true);
     setError("");
 
     const payload = {
       ...form,
-      publishedAt: publish ? new Date().toISOString() : form.publishedAt,
+      publishedAt:
+        publish === true
+          ? new Date().toISOString()
+          : publish === false
+            ? null
+            : form.publishedAt,
     };
 
     try {
@@ -69,7 +76,8 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
   }
 
   async function handleDelete() {
-    if (!confirm("确定删除这门课程吗？关联的章节也会被删除。此操作不可撤销。")) return;
+    if (!confirm("确定删除这门课程吗？关联的章节也会被删除。此操作不可撤销。"))
+      return;
     setSaving(true);
 
     try {
@@ -143,36 +151,47 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
         </div>
 
         <div className="space-y-6">
+          {/* 章节管理入口 */}
+          {isEditing && (
+            <div className="rounded-lg border bg-card p-4">
+              <Button asChild className="w-full">
+                <Link href={`/admin/courses/${initial!.id}/chapters`}>
+                  管理章节
+                </Link>
+              </Button>
+            </div>
+          )}
+
           <div className="rounded-lg border bg-card p-4 space-y-4">
             <h3 className="font-medium">课程设置</h3>
 
             <div>
               <label className="mb-1.5 block text-sm font-medium">
-                价格（分）
+                价格（元）
               </label>
               <input
                 type="number"
-                value={form.price}
+                value={form.price / 100}
                 onChange={(e) =>
-                  setForm({ ...form, price: parseInt(e.target.value) || 0 })
+                  setForm({
+                    ...form,
+                    price: Math.round(parseFloat(e.target.value) * 100) || 0,
+                  })
                 }
                 className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                min={0}
+                step={0.01}
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                显示价格: &yen;{(form.price / 100).toFixed(2)}
+                实际存储: {form.price} 分
               </p>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium">
-                封面图 URL
-              </label>
-              <input
-                type="text"
+              <label className="mb-1.5 block text-sm font-medium">封面图</label>
+              <ImageUpload
                 value={form.coverUrl}
-                onChange={(e) => setForm({ ...form, coverUrl: e.target.value })}
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                placeholder="https://..."
+                onChange={(url) => setForm({ ...form, coverUrl: url })}
               />
             </div>
           </div>
@@ -181,7 +200,7 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
             <h3 className="font-medium">操作</h3>
 
             {form.publishedAt ? (
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-green-600 dark:text-green-400">
                 已发布于{" "}
                 {new Date(form.publishedAt).toLocaleDateString("zh-CN")}
               </div>
@@ -192,7 +211,7 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
             )}
 
             <div className="flex flex-col gap-2">
-              <Button onClick={() => handleSave(false)} disabled={saving}>
+              <Button onClick={() => handleSave()} disabled={saving}>
                 {saving ? "保存中..." : "保存"}
               </Button>
               {!form.publishedAt && (
@@ -202,6 +221,15 @@ export function CourseForm({ initial }: { initial?: CourseData }) {
                   disabled={saving}
                 >
                   发布
+                </Button>
+              )}
+              {form.publishedAt && (
+                <Button
+                  variant="outline"
+                  onClick={() => handleSave(false)}
+                  disabled={saving}
+                >
+                  下架
                 </Button>
               )}
               {isEditing && (

@@ -170,6 +170,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.1
+      vod-js-sdk-v6:
+        specifier: ^1.7.3
+        version: 1.7.3
     devDependencies:
       '@types/flexsearch':
         specifier: ^0.7.6
@@ -3255,6 +3258,9 @@ packages:
     resolution: {integrity: sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==}
     engines: {node: '>=4'}
 
+  axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+
   axios@1.13.6:
     resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
 
@@ -5276,6 +5282,9 @@ packages:
 
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
+
+  js-sha1@0.6.0:
+    resolution: {integrity: sha512-01gwBFreYydzmU9BmZxpVk6svJJHrVxEN3IOiGl6VO93bVKYETJ0sIth6DASI6mIFdt7NmfX9UiByRzsYHGU9w==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -7770,6 +7779,9 @@ packages:
     resolution: {integrity: sha512-3P/2QDccVFBcujfCOeP8vVNuGfuBJHEuvGR8eMmI10p/iwLL2UwF5PDaNaoOS2pRGQEDmJRyeEcc8kmm2Z59RA==}
     engines: {node: '>=6.0'}
     hasBin: true
+
+  vod-js-sdk-v6@1.7.3:
+    resolution: {integrity: sha512-HxVDWjjt2SQANTgMotM1YBF9X3ai8cF8dz/C769cR+mLC3OSVs5UiZT8xcVqYt9Mr7DVVobO8GPiyk0P18tDrw==}
 
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
@@ -10970,6 +10982,12 @@ snapshots:
 
   axe-core@4.11.1: {}
 
+  axios@0.21.4:
+    dependencies:
+      follow-redirects: 1.15.11
+    transitivePeerDependencies:
+      - debug
+
   axios@1.13.6:
     dependencies:
       follow-redirects: 1.15.11
@@ -13472,6 +13490,8 @@ snapshots:
       '@sideway/address': 4.1.5
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+
+  js-sha1@0.6.0: {}
 
   js-tokens@4.0.0: {}
 
@@ -16399,6 +16419,16 @@ snapshots:
     dependencies:
       acorn: 8.16.0
       acorn-walk: 8.3.5
+
+  vod-js-sdk-v6@1.7.3:
+    dependencies:
+      axios: 0.21.4
+      eventemitter3: 4.0.7
+      js-sha1: 0.6.0
+      typescript: 5.9.3
+      uuid: 3.4.0
+    transitivePeerDependencies:
+      - debug
 
   w3c-xmlserializer@5.0.0:
     dependencies:

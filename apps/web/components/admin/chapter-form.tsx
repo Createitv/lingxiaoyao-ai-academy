@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@workspace/ui/components/button";
+import { VideoUpload } from "./video-upload";
 
 interface ChapterData {
   id?: string;
@@ -141,15 +142,12 @@ export function ChapterForm({
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium">
-                视频 FileId（腾讯云 VOD）
-              </label>
-              <input
-                type="text"
-                value={form.videoId}
-                onChange={(e) => setForm({ ...form, videoId: e.target.value })}
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm font-mono"
-                placeholder="Tencent VOD FileId"
+              <label className="mb-1.5 block text-sm font-medium">视频</label>
+              <VideoUpload
+                videoId={form.videoId}
+                onUploadComplete={({ fileId, duration }) =>
+                  setForm({ ...form, videoId: fileId, duration })
+                }
               />
             </div>
 
@@ -169,6 +167,9 @@ export function ChapterForm({
                 className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                 min={0}
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                上传视频后自动填入，也可手动修改
+              </p>
             </div>
 
             <label className="flex items-center gap-2 text-sm">
