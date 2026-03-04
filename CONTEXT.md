@@ -77,6 +77,11 @@ lingxiaoyao/
 │   │   │       ├── auth/wechat/callback/  ✅ 微信 OAuth 回调
 │   │   │       ├── auth/me/               ✅ 当前用户信息
 │   │   │       ├── auth/logout/           ✅ 退出登录
+│   │   │       ├── admin/                 ✅ Admin CRUD API
+│   │   │       │   ├── articles/          ✅ 文章管理 API
+│   │   │       │   ├── docs/              ✅ 文档管理 API
+│   │   │       │   ├── courses/           ✅ 课程+章节管理 API
+│   │   │       │   └── upload/            ✅ 图片(COS)+视频(VOD)上传
 │   │   │       ├── orders/create/         ✅ 创建订单 + 支付宝 URL
 │   │   │       ├── orders/[id]/           ✅ 查询订单状态
 │   │   │       ├── webhook/alipay/        ✅ 支付宝回调（验签+幂等）
@@ -100,11 +105,15 @@ lingxiaoyao/
 │   │   ├── components/
 │   │   │   └── comment-section-wrapper.tsx  ✅ 评论区客户端包装
 │   │   ├── prisma/
-│   │   │   └── schema.prisma        ✅ 完整数据库 schema
-│   │   └── content/                 ✅ MDX 内容目录
-│   │       ├── articles/            ✅ 2篇示例文章
-│   │       ├── docs/                ✅ 2篇示例文档
-│   │       └── courses/claude-for-everyone/  ✅ 3章示例内容
+│   │   │   └── schema.prisma        ✅ 完整数据库 schema（含 Article/Doc 模型）
+│   │   ├── content/                 ✅ MDX 内容目录（已迁移到数据库，保留备份）
+│   │   └── app/(admin)/             ✅ Admin 管理后台
+│   │       ├── layout.tsx           ✅ Admin Shell（侧边栏 + 权限校验）
+│   │       └── admin/
+│   │           ├── page.tsx         ✅ 仪表盘
+│   │           ├── articles/        ✅ 文章 CRUD
+│   │           ├── docs/            ✅ 文档 CRUD
+│   │           └── courses/         ✅ 课程 + 章节 CRUD
 │   ├── desktop/                     ✅ Tauri 2.x 骨架
 │   │   ├── src-tauri/
 │   │   │   ├── tauri.conf.json      ✅ lingxiaoyao:// scheme
@@ -150,7 +159,7 @@ lingxiaoyao/
 | 包管理 | pnpm 9 + TurboRepo |
 | UI 组件 | shadcn/ui + Tailwind CSS |
 | 视频播放器 | xgplayer（西瓜播放器）|
-| 内容管理 | MDX 文件（next-mdx-remote）|
+| 内容管理 | PostgreSQL 数据库 + Admin 后台（next-mdx-remote 渲染）|
 | 数据库 | PostgreSQL + Prisma ORM |
 | 视频托管 | 腾讯云点播（VOD）|
 | 微信登录 | 微信开放平台 OAuth 2.0 |
@@ -189,15 +198,28 @@ lingxiaoyao/
 3. **初始化数据库**：`cd apps/web && npx prisma migrate dev --name init`
 4. **启动开发服务器**：`pnpm dev`（在根目录）
 
+### 已完成：CMS 迁移（2026-03-04）
+
+- [x] 数据库 Schema 扩展（Article/Doc 模型 + UserRole + content 字段）
+- [x] 内容迁移脚本（MDX → PostgreSQL，`scripts/migrate-content-to-db.ts`）
+- [x] Admin 后台框架（`/admin` 路由组 + 侧边栏 + 权限校验）
+- [x] Admin CRUD API（文章/文档/课程/章节 + 图片/视频上传）
+- [x] 内容读取层重构（文件系统 → Prisma 查询）
+- [x] 公开页面适配（`source` → `content`）
+- [x] 三端统一 API（`/api/content/articles|docs|courses`）
+- [x] 搜索索引从数据库构建
+- [x] revalidatePath 缓存刷新
+
 ### 待完成功能
+
+- [ ] Admin 后台 Markdown 编辑器升级（当前为 textarea，计划集成 ByteMD）
 - [ ] 注册 `claudiolab.com` 作为课程品牌域名（待决定）
 - [ ] 微信公众号名称（待决定）
 - [ ] 申请微信开放平台账号（需要营业执照）
 - [ ] 申请支付宝开放平台账号（需要营业执照）
 - [ ] 腾讯云 VOD 申请并上传课程视频
 - [ ] 国内服务器 ICP 备案（约20天）
-- [ ] 完善 Claude for Everyone 剩余3章 MDX 内容
-- [ ] 实现腾讯云 VOD 真实签名 URL 逻辑（当前为占位符）
+- [ ] 完善 Claude for Everyone 剩余3章内容（现在可通过 Admin 后台创建）
 - [ ] 添加导航栏组件（Header/Nav）
 - [ ] 首次部署流程
 - [ ] 微信公众号二维码（需申请后填入 WechatFollowCard）
