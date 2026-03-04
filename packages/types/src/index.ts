@@ -4,6 +4,7 @@ export interface User {
   id: string;
   wechatOpenId?: string;
   wechatUnionId?: string;
+  miniProgramOpenId?: string;
   nickname: string;
   avatarUrl?: string;
   createdAt: Date;
@@ -94,6 +95,7 @@ export interface Order {
   status: OrderStatus;
   amount: number; // in cents (分)
   alipayTradeNo?: string;
+  wechatPayTradeNo?: string;
   createdAt: Date;
   updatedAt: Date;
 }

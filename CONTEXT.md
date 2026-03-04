@@ -82,13 +82,17 @@ lingxiaoyao/
 │   │   │       ├── webhook/alipay/        ✅ 支付宝回调（验签+幂等）
 │   │   │       ├── courses/.../video-url/ ✅ 签名视频 URL
 │   │   │       ├── comments/              ✅ 评论 CRUD
-│   │   │       └── progress/              ✅ 学习进度
+│   │   │       ├── progress/              ✅ 学习进度
+│   │   │       ├── auth/miniprogram/login/ ✅ 小程序 wx.login
+│   │   │       ├── orders/create-wechat/  ✅ 微信支付下单
+│   │   │       ├── webhook/wechat-pay/    ✅ 微信支付回调
+│   │   │       └── content/               ✅ 内容 API（课程/文章）
 │   │   ├── lib/
 │   │   │   ├── content/articles.ts  ✅ 文章读取
 │   │   │   ├── content/docs.ts      ✅ 文档读取
 │   │   │   ├── content/courses.ts   ✅ 课程读取
 │   │   │   ├── auth/jwt.ts          ✅ JWT 签发/验证
-│   │   │   ├── auth/session.ts      ✅ Session（httpOnly Cookie）
+│   │   │   ├── auth/session.ts      ✅ Session（Cookie + Bearer Token 双模式）
 │   │   │   ├── db/prisma.ts         ✅ Prisma Client 单例
 │   │   │   ├── db/user-courses.ts   ✅ 课程权限查询
 │   │   │   ├── db/progress.ts       ✅ 进度查询
@@ -101,12 +105,30 @@ lingxiaoyao/
 │   │       ├── articles/            ✅ 2篇示例文章
 │   │       ├── docs/                ✅ 2篇示例文档
 │   │       └── courses/claude-for-everyone/  ✅ 3章示例内容
-│   └── desktop/                     ✅ Tauri 2.x 骨架
-│       ├── src-tauri/
-│       │   ├── tauri.conf.json      ✅ lingxiaoyao:// scheme
-│       │   ├── Cargo.toml           ✅
-│       │   └── src/lib.rs           ✅ deep-link 处理
-│       └── src/auth.ts              ✅ 桌面端微信登录流程
+│   ├── desktop/                     ✅ Tauri 2.x 骨架
+│   │   ├── src-tauri/
+│   │   │   ├── tauri.conf.json      ✅ lingxiaoyao:// scheme
+│   │   │   ├── Cargo.toml           ✅
+│   │   │   └── src/lib.rs           ✅ deep-link 处理
+│   │   └── src/auth.ts              ✅ 桌面端微信登录流程
+│   └── miniprogram/                 ✅ Taro 3.x 微信小程序
+│       ├── src/
+│       │   ├── app.tsx              ✅ 入口（自动登录）
+│       │   ├── app.config.ts        ✅ TabBar 配置（首页/课程/学习/我的）
+│       │   ├── pages/index/         ✅ 首页（课程推荐 + 最新文章）
+│       │   ├── pages/courses/       ✅ 课程列表
+│       │   ├── pages/course-detail/ ✅ 课程详情 + 购买
+│       │   ├── pages/chapter/       ✅ 章节播放（视频 + 内容 + 评论）
+│       │   ├── pages/articles/      ✅ 文章列表（标签筛选）
+│       │   ├── pages/article/       ✅ 文章详情
+│       │   ├── pages/dashboard/     ✅ 学习中心（进度追踪）
+│       │   ├── pages/profile/       ✅ 个人中心
+│       │   ├── components/
+│       │   │   ├── comment-section/ ✅ 评论组件（发布/回复/删除）
+│       │   │   └── rich-content/    ✅ Markdown 内容渲染
+│       │   ├── services/            ✅ API 调用封装
+│       │   └── utils/request.ts     ✅ HTTP 请求工具（Bearer Token）
+│       └── project.config.json      ✅ 小程序配置
 └── packages/
     ├── ui/                          ✅ shadcn/ui 共享组件库
     │   ├── src/components/button.tsx        ✅
@@ -124,6 +146,7 @@ lingxiaoyao/
 |----|------|
 | Web 框架 | Next.js 15 (App Router) |
 | 桌面框架 | Tauri 2.x |
+| 小程序框架 | Taro 3.x (React + TypeScript) |
 | 包管理 | pnpm 9 + TurboRepo |
 | UI 组件 | shadcn/ui + Tailwind CSS |
 | 视频播放器 | xgplayer（西瓜播放器）|
@@ -131,7 +154,7 @@ lingxiaoyao/
 | 数据库 | PostgreSQL + Prisma ORM |
 | 视频托管 | 腾讯云点播（VOD）|
 | 微信登录 | 微信开放平台 OAuth 2.0 |
-| 支付 | 支付宝（alipay-sdk-nodejs-all）|
+| 支付 | 支付宝（Web）+ 微信支付（小程序）|
 | 评论系统 | 自建（comments 表）|
 | 学习进度 | 自建（user_progress 表）|
 | 全文搜索 | flexsearch（本地构建索引）|

@@ -1,0 +1,116 @@
+.chapter-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  .loading-text {
+    font-size: 28px;
+    color: #999;
+  }
+}
+
+.video-player {
+  width: 100%;
+  height: 422px;
+}
+
+.chapter-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.chapter-header {
+  padding: 30px;
+  background: #fff;
+
+  .chapter-title {
+    display: block;
+    font-size: 36px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .chapter-duration {
+    font-size: 24px;
+    color: #999;
+  }
+}
+
+.progress-area {
+  padding: 20px 30px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+
+  .progress-btn {
+    display: inline-flex;
+    padding: 12px 32px;
+    border: 1px solid #d9d9d9;
+    border-radius: 32px;
+    background: #fff;
+
+    &.completed {
+      border-color: #52c41a;
+      background: rgba(82, 196, 26, 0.1);
+
+      .progress-text {
+        color: #52c41a;
+      }
+    }
+
+    .progress-text {
+      font-size: 24px;
+      color: #666;
+    }
+  }
+}
+
+.content-area {
+  margin-top: 20px;
+  padding: 30px;
+  background: #fff;
+}
+
+.chapter-nav {
+  margin-top: 20px;
+  padding: 30px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  .nav-btn {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f5f5f5;
+
+    &.prev {
+      .nav-text {
+        color: #666;
+      }
+    }
+
+    &.next {
+      background: #1677ff;
+
+      .nav-text {
+        color: #fff;
+      }
+    }
+
+    .nav-text {
+      font-size: 28px;
+      font-weight: 500;
+    }
+  }
+}

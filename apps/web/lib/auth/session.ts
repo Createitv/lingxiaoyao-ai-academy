@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { verifyJWT } from "./jwt";
 import { prisma } from "@/lib/db/prisma";
 import type { User } from "@workspace/types";
@@ -6,8 +6,20 @@ import type { User } from "@workspace/types";
 const COOKIE_NAME = "lxy_session";
 
 export async function getCurrentUser(): Promise<User | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
+  // Try Bearer token first (mini program / desktop), then fall back to cookie (web)
+  let token: string | undefined;
+
+  const headerStore = await headers();
+  const authHeader = headerStore.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.slice(7);
+  }
+
+  if (!token) {
+    const cookieStore = await cookies();
+    token = cookieStore.get(COOKIE_NAME)?.value;
+  }
+
   if (!token) return null;
 
   const payload = verifyJWT(token);
@@ -24,6 +36,7 @@ export async function getCurrentUser(): Promise<User | null> {
       id: user.id,
       wechatOpenId: user.wechatOpenId ?? undefined,
       wechatUnionId: user.wechatUnionId ?? undefined,
+      miniProgramOpenId: user.miniProgramOpenId ?? undefined,
       nickname: user.nickname,
       avatarUrl: user.avatarUrl ?? undefined,
       createdAt: user.createdAt,
