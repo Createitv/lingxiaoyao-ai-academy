@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  wechatOpenId   String    @unique @map("wechat_open_id")
+  wechatUnionId  String?   @map("wechat_union_id")
+  nickname       String
+  avatarUrl      String?   @map("avatar_url")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  orders         Order[]
+  userCourses    UserCourse[]
+  comments       Comment[]
+  progress       UserProgress[]
+
+  @@map("users")
+}
+
+// ─── Courses ─────────────────────────────────────────────────────────────────
+
+model Course {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  description    String    @db.Text
+  price          Int       @default(0) // in cents (分)
+  coverUrl       String?   @map("cover_url")
+  totalChapters  Int       @default(0) @map("total_chapters")
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  chapters       Chapter[]
+  orders         Order[]
+  userCourses    UserCourse[]
+
+  @@map("courses")
+}
+
+// ─── Chapters ────────────────────────────────────────────────────────────────
+
+model Chapter {
+  id        String   @id @default(cuid())
+  courseId  String   @map("course_id")
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  index     Int
+  title     String
+  videoId   String   @map("video_id") // Tencent VOD FileId
+  isFree    Boolean  @default(false) @map("is_free")
+  duration  Int      @default(0) // minutes
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([courseId, index])
+  @@map("chapters")
+}
+
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id])
+  courseId       String      @map("course_id")
+  course         Course      @relation(fields: [courseId], references: [id])
+  status         OrderStatus @default(pending)
+  amount         Int         // in cents (分)
+  alipayTradeNo  String?     @unique @map("alipay_trade_no")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  userCourse     UserCourse?
+  paymentLogs    PaymentLog[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+// ─── User Courses (Access Rights) ────────────────────────────────────────────
+
+model UserCourse {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+  courseId        String   @map("course_id")
+  course          Course   @relation(fields: [courseId], references: [id])
+  orderId         String?  @unique @map("order_id")
+  order           Order?   @relation(fields: [orderId], references: [id])
+  accessGrantedAt DateTime @default(now()) @map("access_granted_at")
+
+  @@unique([userId, courseId])
+  @@map("user_courses")
+}
+
+// ─── Payment Logs (Audit) ────────────────────────────────────────────────────
+
+model PaymentLog {
+  id          String   @id @default(cuid())
+  orderId     String   @map("order_id")
+  order       Order    @relation(fields: [orderId], references: [id])
+  provider    String   // "alipay"
+  event       String   // "notify", "query", etc.
+  rawPayload  String   @db.Text @map("raw_payload")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("payment_logs")
+}
+
+// ─── Comments ─────────────────────────────────────────────────────────────────
+
+model Comment {
+  id          String      @id @default(cuid())
+  userId      String      @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
+  contentType ContentType @map("content_type")
+  contentSlug String      @map("content_slug")
+  parentId    String?     @map("parent_id")
+  parent      Comment?    @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[]   @relation("CommentReplies")
+  body        String      @db.Text
+  isDeleted   Boolean     @default(false) @map("is_deleted")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  @@index([contentType, contentSlug])
+  @@map("comments")
+}
+
+// ─── User Progress ────────────────────────────────────────────────────────────
+
+model UserProgress {
+  id          String      @id @default(cuid())
+  userId      String      @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
+  contentType ContentType @map("content_type")
+  contentSlug String      @map("content_slug")
+  completedAt DateTime    @default(now()) @map("completed_at")
+
+  @@unique([userId, contentType, contentSlug])
+  @@map("user_progress")
+}
+
+enum ContentType {
+  article
+  doc
+  chapter
+}

@@ -1,0 +1,20 @@
+{
+  "name": "lingxiaoyao",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:app": "turbo run dev --filter=desktop",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "build:desktop": "BUILD_TARGET=desktop turbo run build --filter=web",
+    "search:index": "tsx scripts/build-search-index.ts"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

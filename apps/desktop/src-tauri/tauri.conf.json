@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "identifier": "cn.lingxiaoyao.app",
+  "productName": "林逍遥AI",
+  "version": "0.0.1",
+  "build": {
+    "beforeDevCommand": "",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "cd ../web && BUILD_TARGET=desktop pnpm build",
+    "frontendDist": "../web/out"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "林逍遥AI",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: https://*.myqcloud.com https://*.vod2.myqcloud.com; connect-src 'self' https://lingxiaoyao.cn https://api.weixin.qq.com; media-src 'self' https://*.vod2.myqcloud.com"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["lingxiaoyao"]
+      }
+    },
+    "shell": {
+      "open": true
+    }
+  }
+}
