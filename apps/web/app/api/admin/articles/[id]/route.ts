@@ -32,7 +32,7 @@ export async function PUT(
 
   const { id } = await params;
   const body = await req.json();
-  const { slug, title, summary, content, coverUrl, tags, series, isFree, publishedAt } = body;
+  const { slug, title, summary, content, coverUrl, tags, series, sortOrder, isFree, publishedAt } = body;
 
   const readingTime = content
     ? Math.max(1, Math.ceil(content.replace(/<[^>]+>/g, "").length / 300))
@@ -48,6 +48,7 @@ export async function PUT(
       ...(coverUrl !== undefined && { coverUrl: coverUrl || null }),
       ...(tags !== undefined && { tags }),
       ...(series !== undefined && { series: series || null }),
+      ...(sortOrder !== undefined && { sortOrder }),
       ...(isFree !== undefined && { isFree }),
       ...(publishedAt !== undefined && {
         publishedAt: publishedAt ? new Date(publishedAt) : null,

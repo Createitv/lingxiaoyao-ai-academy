@@ -14,6 +14,7 @@ interface ArticleData {
   coverUrl: string;
   tags: string[];
   series: string;
+  sortOrder: number;
   isFree: boolean;
   publishedAt: string | null;
 }
@@ -30,6 +31,7 @@ export function ArticleForm({ initial }: { initial?: ArticleData }) {
     coverUrl: initial?.coverUrl ?? "",
     tags: initial?.tags ?? [],
     series: initial?.series ?? "",
+    sortOrder: initial?.sortOrder ?? 0,
     isFree: initial?.isFree ?? true,
     publishedAt: initial?.publishedAt ?? null,
   });
@@ -202,6 +204,22 @@ export function ArticleForm({ initial }: { initial?: ArticleData }) {
                 className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                 placeholder="如：30天学Claude"
               />
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">排序序号</label>
+              <input
+                type="number"
+                value={form.sortOrder}
+                onChange={(e) =>
+                  setForm({ ...form, sortOrder: parseInt(e.target.value) || 0 })
+                }
+                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                min={0}
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                系列文章按此排序，数字越小越靠前
+              </p>
             </div>
 
             <div>

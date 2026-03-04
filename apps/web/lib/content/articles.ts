@@ -6,6 +6,7 @@ interface ArticleListItem {
   date: string;
   tags: string[];
   series?: string;
+  sortOrder: number;
   isFree: boolean;
   summary: string;
   coverUrl?: string;
@@ -16,23 +17,51 @@ interface ArticleDetail extends ArticleListItem {
   content: string;
 }
 
+function mapArticle(a: {
+  slug: string;
+  title: string;
+  publishedAt: Date | null;
+  createdAt: Date;
+  tags: string[];
+  series: string | null;
+  sortOrder: number;
+  isFree: boolean;
+  summary: string;
+  coverUrl: string | null;
+  readingTime: number;
+}): ArticleListItem {
+  return {
+    slug: a.slug,
+    title: a.title,
+    date: (a.publishedAt ?? a.createdAt).toISOString(),
+    tags: a.tags,
+    series: a.series ?? undefined,
+    sortOrder: a.sortOrder,
+    isFree: a.isFree,
+    summary: a.summary,
+    coverUrl: a.coverUrl ?? undefined,
+    readingTime: a.readingTime,
+  };
+}
+
 export async function getAllArticles(): Promise<ArticleListItem[]> {
   const articles = await prisma.article.findMany({
     where: { publishedAt: { not: null } },
     orderBy: { publishedAt: "desc" },
   });
 
-  return articles.map((a) => ({
-    slug: a.slug,
-    title: a.title,
-    date: (a.publishedAt ?? a.createdAt).toISOString(),
-    tags: a.tags,
-    series: a.series ?? undefined,
-    isFree: a.isFree,
-    summary: a.summary,
-    coverUrl: a.coverUrl ?? undefined,
-    readingTime: a.readingTime,
-  }));
+  return articles.map(mapArticle);
+}
+
+export async function getArticlesBySeries(
+  series: string,
+): Promise<ArticleListItem[]> {
+  const articles = await prisma.article.findMany({
+    where: { series, publishedAt: { not: null } },
+    orderBy: { sortOrder: "asc" },
+  });
+
+  return articles.map(mapArticle);
 }
 
 export async function getAllArticleSlugs(): Promise<string[]> {
@@ -60,15 +89,7 @@ export async function getArticleBySlug(
   if (!article) return null;
 
   return {
-    slug: article.slug,
-    title: article.title,
-    date: (article.publishedAt ?? article.createdAt).toISOString(),
-    tags: article.tags,
-    series: article.series ?? undefined,
-    isFree: article.isFree,
-    summary: article.summary,
-    coverUrl: article.coverUrl ?? undefined,
-    readingTime: article.readingTime,
+    ...mapArticle(article),
     content: article.content,
   };
 }

@@ -5,6 +5,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { getArticleBySlug, getAllArticleSlugs } from "@/lib/content/articles";
+import { mdxComponents } from "@/components/mdx";
 import { WechatFollowCard } from "@workspace/ui/components/wechat-follow-card";
 import { ProgressButton } from "@workspace/ui/components/progress-button";
 import { CommentSectionWrapper } from "@/components/comment-section-wrapper";
@@ -94,7 +95,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Content */}
         <div className="prose prose-zinc dark:prose-invert max-w-none">
-          <MDXRemote source={article.content} options={mdxOptions} />
+          <MDXRemote source={article.content} options={mdxOptions} components={mdxComponents} />
         </div>
 
         {/* Footer */}

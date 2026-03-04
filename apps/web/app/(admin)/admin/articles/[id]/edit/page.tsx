@@ -24,6 +24,7 @@ export default async function EditArticlePage({
           coverUrl: article.coverUrl ?? "",
           tags: article.tags,
           series: article.series ?? "",
+          sortOrder: article.sortOrder,
           isFree: article.isFree,
           publishedAt: article.publishedAt?.toISOString() ?? null,
         }}
