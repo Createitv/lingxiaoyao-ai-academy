@@ -109,7 +109,11 @@ export async function GET(request: NextRequest) {
     if (tokenData.errcode) {
       console.error("[WeChat Callback] Token exchange failed:", tokenData.errcode, tokenData.errmsg);
       return NextResponse.json(
-        { success: false, error: "微信授权失败，请重试" },
+        {
+          success: false,
+          error: "微信授权失败，请重试",
+          detail: `errcode: ${tokenData.errcode}, errmsg: ${tokenData.errmsg}`,
+        },
         { status: 400 },
       );
     }
@@ -122,7 +126,11 @@ export async function GET(request: NextRequest) {
     if (userInfo.errcode) {
       console.error("[WeChat Callback] User info failed:", userInfo.errcode, userInfo.errmsg);
       return NextResponse.json(
-        { success: false, error: "获取用户信息失败，请重试" },
+        {
+          success: false,
+          error: "获取用户信息失败，请重试",
+          detail: `errcode: ${userInfo.errcode}, errmsg: ${userInfo.errmsg}`,
+        },
         { status: 400 },
       );
     }
