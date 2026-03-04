@@ -46,6 +46,24 @@ function markdownToHtml(markdown: string): string {
     '<code style="background:#f6f8fa;padding:4rpx 12rpx;border-radius:6rpx;font-size:24rpx">$1</code>',
   );
 
+  // Images (before links to avoid conflict with similar syntax)
+  html = html.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    '<img src="$2" alt="$1" style="width:100%;border-radius:12rpx;margin:16rpx 0" />',
+  );
+
+  // Links (miniprogram RichText doesn't support <a>, render as styled text)
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<span style="color:#1677ff">$1</span>',
+  );
+
+  // Blockquotes
+  html = html.replace(
+    /^> (.+)$/gm,
+    '<p style="border-left:6rpx solid #d0d7de;padding-left:24rpx;color:#656d76;margin:16rpx 0">$1</p>',
+  );
+
   // Unordered lists
   html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
   html = html.replace(/(<li>[\s\S]*?<\/li>)/g, "<ul>$1</ul>");
