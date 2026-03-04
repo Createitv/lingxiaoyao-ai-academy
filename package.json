@@ -3,16 +3,26 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "build": "turbo run build",
     "dev": "turbo run dev",
     "dev:web": "turbo run dev --filter=web",
     "dev:app": "turbo run dev --filter=desktop",
     "dev:mp": "turbo run dev --filter=miniprogram",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=web",
     "build:mp": "turbo run build --filter=miniprogram",
+    "build:desktop": "BUILD_TARGET=desktop turbo run build --filter=web",
+    "start": "turbo run start --filter=web",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "build:desktop": "BUILD_TARGET=desktop turbo run build --filter=web",
-    "search:index": "tsx scripts/build-search-index.ts"
+    "db:generate": "pnpm --filter web exec prisma generate",
+    "db:migrate": "pnpm --filter web exec prisma migrate dev",
+    "db:push": "pnpm --filter web exec prisma db push",
+    "db:studio": "pnpm --filter web exec prisma studio",
+    "db:seed": "pnpm --filter web exec tsx prisma/seed.ts",
+    "db:migrate:content": "tsx scripts/migrate-content-to-db.ts",
+    "admin:promote": "tsx scripts/promote-admin.ts",
+    "search:index": "tsx scripts/build-search-index.ts",
+    "clean": "turbo run clean && rm -rf node_modules/.cache"
   },
   "pnpm": {
     "overrides": {

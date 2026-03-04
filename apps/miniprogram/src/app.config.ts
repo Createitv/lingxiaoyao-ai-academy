@@ -47,6 +47,4 @@ export default defineAppConfig({
       },
     ],
   },
-  darkmode: true,
-  themeLocation: "theme.json",
 });

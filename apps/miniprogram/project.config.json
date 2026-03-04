@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "lingxiaoyao-ai",
   "description": "凌逍遥 AI 教育平台",
-  "appid": "your_mini_program_app_id",
+  "appid": "wxb41a3f32d9d69515",
   "setting": {
     "urlCheck": true,
     "es6": false,
