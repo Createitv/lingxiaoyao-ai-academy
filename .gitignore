@@ -44,3 +44,6 @@ prisma/migrations/
 # Search index (generated)
 apps/web/public/search-index.json
 .vercel
+
+# Claude Code context
+CONTEXT.md
