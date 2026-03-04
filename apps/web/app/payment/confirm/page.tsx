@@ -68,6 +68,9 @@ function PaymentConfirmContent() {
       if (payUrl) {
         sessionStorage.setItem("lxy_pending_order", orderId);
         window.location.href = payUrl;
+      } else {
+        // 免费课程：订单已直接完成，跳转到课程页
+        router.push(`/courses/${courseSlug}`);
       }
     } catch {
       setError("网络错误，请重试");

@@ -34,8 +34,8 @@ function PaymentSuccessContent() {
 
       if (data.success) {
         setStatus(data.data.status);
-        if (data.data.courseSlug) {
-          setCourseSlug(data.data.courseSlug);
+        if (data.data.course?.slug) {
+          setCourseSlug(data.data.course.slug);
         }
         return data.data.status;
       }
