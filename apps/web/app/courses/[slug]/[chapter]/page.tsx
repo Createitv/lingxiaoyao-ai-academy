@@ -6,7 +6,6 @@ import rehypeSlug from "rehype-slug";
 import { getChapterContent, getCourseBySlug } from "@/lib/content/courses";
 import { getCurrentUser } from "@/lib/auth/session";
 import { hasCoursePurchased } from "@/lib/db/user-courses";
-import { prisma } from "@/lib/db/prisma";
 import { VideoPlayer } from "@workspace/ui/components/video-player";
 import { ProgressButton } from "@workspace/ui/components/progress-button";
 import { CommentSectionWrapper } from "@/components/comment-section-wrapper";
@@ -38,18 +37,13 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   const chapterContent = await getChapterContent(slug, chapterIndex);
   if (!chapterContent) notFound();
 
-  // Access control: use database course ID (CUID) for permission check,
-  // not the slug-based ID from getCourseBySlug()
+  // Access control
   if (!chapterContent.isFree) {
     const user = await getCurrentUser();
     if (!user) {
       redirect(`/api/auth/wechat/init?redirect=/courses/${slug}/${chapter}`);
     }
-    const dbCourse = await prisma.course.findUnique({ where: { slug } });
-    if (!dbCourse) {
-      redirect(`/courses/${slug}`);
-    }
-    const hasPurchased = await hasCoursePurchased(user.id, dbCourse.id);
+    const hasPurchased = await hasCoursePurchased(user.id, course.id);
     if (!hasPurchased) {
       redirect(`/courses/${slug}`);
     }
@@ -86,10 +80,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
       </div>
 
       {/* MDX Content */}
-      {chapterContent.source && (
+      {chapterContent.content && (
         <div className="prose prose-zinc dark:prose-invert max-w-none mb-8">
           <MDXRemote
-            source={chapterContent.source}
+            source={chapterContent.content}
             options={{
               mdxOptions: {
                 rehypePlugins: [rehypeHighlight, rehypeSlug],

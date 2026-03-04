@@ -39,6 +39,7 @@ export async function getCurrentUser(): Promise<User | null> {
       miniProgramOpenId: user.miniProgramOpenId ?? undefined,
       nickname: user.nickname,
       avatarUrl: user.avatarUrl ?? undefined,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

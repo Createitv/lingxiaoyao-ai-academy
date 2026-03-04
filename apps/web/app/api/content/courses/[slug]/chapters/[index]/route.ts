@@ -34,7 +34,7 @@ export async function GET(
         videoId: chapter.videoId,
         isFree: chapter.isFree,
         duration: chapter.duration,
-        source: chapter.source,
+        content: chapter.content,
       },
     });
   }
@@ -74,7 +74,7 @@ export async function GET(
       videoId: chapter.videoId,
       isFree: chapter.isFree,
       duration: chapter.duration,
-      source: chapter.source,
+      content: chapter.content,
     },
   });
 }

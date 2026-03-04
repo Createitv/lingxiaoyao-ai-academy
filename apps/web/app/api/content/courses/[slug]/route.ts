@@ -24,7 +24,7 @@ export async function GET(
       price: course.price,
       coverUrl: course.coverUrl,
       totalChapters: course.totalChapters,
-      source: course.source,
+      content: course.content,
       chapters: course.chapters.map((ch) => ({
         index: ch.index,
         title: ch.title,

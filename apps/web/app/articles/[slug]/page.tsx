@@ -94,7 +94,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Content */}
         <div className="prose prose-zinc dark:prose-invert max-w-none">
-          <MDXRemote source={article.source} options={mdxOptions} />
+          <MDXRemote source={article.content} options={mdxOptions} />
         </div>
 
         {/* Footer */}

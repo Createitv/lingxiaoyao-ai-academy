@@ -47,9 +47,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
           <p className="text-muted-foreground mb-6">{course.description}</p>
 
           {/* Course intro MDX */}
-          {course.source && (
+          {course.content && (
             <div className="prose prose-zinc dark:prose-invert max-w-none mb-8">
-              <MDXRemote source={course.source} />
+              <MDXRemote source={course.content} />
             </div>
           )}
 

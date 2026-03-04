@@ -1,94 +1,74 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import type { Article, ArticleFrontmatter } from "@workspace/types";
+import { prisma } from "@/lib/db/prisma";
 
-const ARTICLES_DIR = path.join(process.cwd(), "content/articles");
-
-// Only allow alphanumeric, hyphens, underscores — no path traversal
-const SAFE_SLUG_RE = /^[a-zA-Z0-9_-]+$/;
-
-function assertSafeSlug(slug: string): void {
-  if (!SAFE_SLUG_RE.test(slug)) {
-    throw new Error(`Invalid slug: "${slug}"`);
-  }
+interface ArticleListItem {
+  slug: string;
+  title: string;
+  date: string;
+  tags: string[];
+  series?: string;
+  isFree: boolean;
+  summary: string;
+  coverUrl?: string;
+  readingTime: number;
 }
 
-function estimateReadingTime(content: string): number {
-  const wordsPerMinute = 300; // Chinese characters
-  const words = content.replace(/<[^>]+>/g, "").length;
-  return Math.max(1, Math.ceil(words / wordsPerMinute));
+interface ArticleDetail extends ArticleListItem {
+  content: string;
 }
 
-function getArticleFiles(): string[] {
-  if (!fs.existsSync(ARTICLES_DIR)) return [];
-  return fs
-    .readdirSync(ARTICLES_DIR)
-    .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"));
-}
-
-export async function getAllArticles(): Promise<Article[]> {
-  const files = getArticleFiles();
-
-  const articles = files.map((file) => {
-    const slug = file.replace(/\.(mdx|md)$/, "");
-    const filePath = path.join(ARTICLES_DIR, file);
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(raw);
-    const frontmatter = data as ArticleFrontmatter;
-
-    return {
-      slug,
-      ...frontmatter,
-      readingTime: estimateReadingTime(content),
-    } satisfies Article;
+export async function getAllArticles(): Promise<ArticleListItem[]> {
+  const articles = await prisma.article.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: { publishedAt: "desc" },
   });
 
-  return articles.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  return articles.map((a) => ({
+    slug: a.slug,
+    title: a.title,
+    date: (a.publishedAt ?? a.createdAt).toISOString(),
+    tags: a.tags,
+    series: a.series ?? undefined,
+    isFree: a.isFree,
+    summary: a.summary,
+    coverUrl: a.coverUrl ?? undefined,
+    readingTime: a.readingTime,
+  }));
 }
 
 export async function getAllArticleSlugs(): Promise<string[]> {
-  return getArticleFiles().map((file) => file.replace(/\.(mdx|md)$/, ""));
+  const articles = await prisma.article.findMany({
+    where: { publishedAt: { not: null } },
+    select: { slug: true },
+  });
+  return articles.map((a) => a.slug);
 }
 
-export async function getLatestArticles(count: number): Promise<Article[]> {
+export async function getLatestArticles(
+  count: number,
+): Promise<ArticleListItem[]> {
   const all = await getAllArticles();
   return all.slice(0, count);
 }
 
 export async function getArticleBySlug(
   slug: string,
-): Promise<(Article & { source: string }) | null> {
-  // Guard: prevent path traversal
-  try {
-    assertSafeSlug(slug);
-  } catch {
-    return null;
-  }
+): Promise<ArticleDetail | null> {
+  const article = await prisma.article.findFirst({
+    where: { slug, publishedAt: { not: null } },
+  });
 
-  const filePath = path.join(ARTICLES_DIR, `${slug}.mdx`);
-  const mdPath = path.join(ARTICLES_DIR, `${slug}.md`);
+  if (!article) return null;
 
-  // Extra guard: ensure resolved path stays inside ARTICLES_DIR
-  const resolvedPath = fs.existsSync(filePath) ? filePath : mdPath;
-  if (!resolvedPath.startsWith(ARTICLES_DIR)) return null;
-
-  if (!fs.existsSync(resolvedPath)) return null;
-
-  try {
-    const raw = fs.readFileSync(resolvedPath, "utf-8");
-    const { data, content } = matter(raw);
-    const frontmatter = data as ArticleFrontmatter;
-
-    return {
-      slug,
-      ...frontmatter,
-      readingTime: estimateReadingTime(content),
-      source: content,
-    };
-  } catch {
-    return null;
-  }
+  return {
+    slug: article.slug,
+    title: article.title,
+    date: (article.publishedAt ?? article.createdAt).toISOString(),
+    tags: article.tags,
+    series: article.series ?? undefined,
+    isFree: article.isFree,
+    summary: article.summary,
+    coverUrl: article.coverUrl ?? undefined,
+    readingTime: article.readingTime,
+    content: article.content,
+  };
 }

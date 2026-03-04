@@ -1,151 +1,91 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import type { Course, ChapterFrontmatter } from "@workspace/types";
+import { prisma } from "@/lib/db/prisma";
 
-const COURSES_DIR = path.join(process.cwd(), "content/courses");
-
-const SAFE_SLUG_RE = /^[a-zA-Z0-9_-]+$/;
-
-function assertSafeSlug(slug: string): void {
-  if (!SAFE_SLUG_RE.test(slug)) {
-    throw new Error(`Invalid slug: "${slug}"`);
-  }
+interface ChapterItem {
+  index: number;
+  title: string;
+  videoId: string;
+  isFree: boolean;
+  duration: number;
 }
 
-interface CourseWithChapters extends Course {
-  chapters: Array<{
-    index: number;
-    title: string;
-    videoId: string;
-    isFree: boolean;
-    duration: number;
-  }>;
+interface CourseWithChapters {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
   coverUrl?: string;
-  source?: string;
-}
-
-function getCourseSlugs(): string[] {
-  if (!fs.existsSync(COURSES_DIR)) return [];
-  return fs.readdirSync(COURSES_DIR).filter((item) => {
-    const stat = fs.statSync(path.join(COURSES_DIR, item));
-    return stat.isDirectory();
-  });
-}
-
-function readCourseIndex(
-  courseSlug: string,
-): { title: string; description: string; price: number; coverUrl?: string; source?: string } | null {
-  // Guard: prevent path traversal
-  try { assertSafeSlug(courseSlug); } catch { return null; }
-
-  const dir = path.join(COURSES_DIR, courseSlug);
-  // Ensure resolved dir stays inside COURSES_DIR
-  if (!dir.startsWith(COURSES_DIR)) return null;
-
-  const indexPath = path.join(dir, "index.mdx");
-  const mdPath = path.join(dir, "index.md");
-  const actualPath = fs.existsSync(indexPath) ? indexPath : mdPath;
-
-  if (!fs.existsSync(actualPath)) return null;
-
-  try {
-    const raw = fs.readFileSync(actualPath, "utf-8");
-    const { data, content } = matter(raw);
-
-    return {
-      title: data.title ?? courseSlug,
-      description: data.description ?? "",
-      price: data.price ?? 0,
-      coverUrl: data.coverUrl,
-      source: content,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function readChapters(
-  courseSlug: string,
-): Array<{ index: number; title: string; videoId: string; isFree: boolean; duration: number }> {
-  const dir = path.join(COURSES_DIR, courseSlug);
-  if (!fs.existsSync(dir)) return [];
-
-  return fs
-    .readdirSync(dir)
-    .filter(
-      (file) =>
-        (file.endsWith(".mdx") || file.endsWith(".md")) &&
-        file !== "index.mdx" &&
-        file !== "index.md",
-    )
-    .map((file) => {
-      const filePath = path.join(dir, file);
-      const raw = fs.readFileSync(filePath, "utf-8");
-      const { data } = matter(raw);
-      const frontmatter = data as ChapterFrontmatter;
-
-      return {
-        index: frontmatter.chapterIndex,
-        title: frontmatter.title,
-        videoId: frontmatter.videoId ?? "",
-        isFree: frontmatter.isFree ?? false,
-        duration: frontmatter.duration ?? 0,
-      };
-    })
-    .sort((a, b) => a.index - b.index);
+  totalChapters: number;
+  chapters: ChapterItem[];
+  content?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export async function getCourses(): Promise<CourseWithChapters[]> {
-  const slugs = getCourseSlugs();
+  const courses = await prisma.course.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: { updatedAt: "desc" },
+    include: { chapters: { orderBy: { index: "asc" } } },
+  });
 
-  return slugs
-    .map((slug) => {
-      const index = readCourseIndex(slug);
-      if (!index) return null;
-
-      const chapters = readChapters(slug);
-
-      return {
-        id: slug,
-        slug,
-        title: index.title,
-        description: index.description,
-        price: index.price,
-        coverUrl: index.coverUrl,
-        totalChapters: chapters.length,
-        chapters,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } satisfies CourseWithChapters;
-    })
-    .filter(Boolean) as CourseWithChapters[];
+  return courses.map((c) => ({
+    id: c.id,
+    slug: c.slug,
+    title: c.title,
+    description: c.description,
+    price: c.price,
+    coverUrl: c.coverUrl ?? undefined,
+    totalChapters: c.totalChapters,
+    chapters: c.chapters.map((ch) => ({
+      index: ch.index,
+      title: ch.title,
+      videoId: ch.videoId,
+      isFree: ch.isFree,
+      duration: ch.duration,
+    })),
+    content: c.content ?? undefined,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+  }));
 }
 
 export async function getAllCourseSlugs(): Promise<string[]> {
-  return getCourseSlugs();
+  const courses = await prisma.course.findMany({
+    where: { publishedAt: { not: null } },
+    select: { slug: true },
+  });
+  return courses.map((c) => c.slug);
 }
 
 export async function getCourseBySlug(
   slug: string,
 ): Promise<CourseWithChapters | null> {
-  const index = readCourseIndex(slug);
-  if (!index) return null;
+  const course = await prisma.course.findFirst({
+    where: { slug, publishedAt: { not: null } },
+    include: { chapters: { orderBy: { index: "asc" } } },
+  });
 
-  const chapters = readChapters(slug);
+  if (!course) return null;
 
   return {
-    id: slug,
-    slug,
-    title: index.title,
-    description: index.description,
-    price: index.price,
-    coverUrl: index.coverUrl,
-    totalChapters: chapters.length,
-    chapters,
-    source: index.source,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    id: course.id,
+    slug: course.slug,
+    title: course.title,
+    description: course.description,
+    price: course.price,
+    coverUrl: course.coverUrl ?? undefined,
+    totalChapters: course.totalChapters,
+    chapters: course.chapters.map((ch) => ({
+      index: ch.index,
+      title: ch.title,
+      videoId: ch.videoId,
+      isFree: ch.isFree,
+      duration: ch.duration,
+    })),
+    content: course.content ?? undefined,
+    createdAt: course.createdAt,
+    updatedAt: course.updatedAt,
   };
 }
 
@@ -157,34 +97,26 @@ export async function getChapterContent(
   videoId: string;
   isFree: boolean;
   duration: number;
-  source?: string;
+  content?: string;
 } | null> {
-  const dir = path.join(COURSES_DIR, courseSlug);
-  if (!fs.existsSync(dir)) return null;
+  const course = await prisma.course.findFirst({
+    where: { slug: courseSlug },
+    select: { id: true },
+  });
 
-  const files = fs.readdirSync(dir).filter(
-    (f) =>
-      (f.endsWith(".mdx") || f.endsWith(".md")) &&
-      f !== "index.mdx" &&
-      f !== "index.md",
-  );
+  if (!course) return null;
 
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(raw);
-    const fm = data as ChapterFrontmatter;
+  const chapter = await prisma.chapter.findFirst({
+    where: { courseId: course.id, index: chapterIndex },
+  });
 
-    if (fm.chapterIndex === chapterIndex) {
-      return {
-        title: fm.title,
-        videoId: fm.videoId ?? "",
-        isFree: fm.isFree ?? false,
-        duration: fm.duration ?? 0,
-        source: content,
-      };
-    }
-  }
+  if (!chapter) return null;
 
-  return null;
+  return {
+    title: chapter.title,
+    videoId: chapter.videoId,
+    isFree: chapter.isFree,
+    duration: chapter.duration,
+    content: chapter.content ?? undefined,
+  };
 }

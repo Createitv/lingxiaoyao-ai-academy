@@ -38,7 +38,7 @@ export default async function DocPage({ params }: DocPageProps) {
       <h1 className="text-3xl font-bold mb-6">{doc.title}</h1>
       <div className="prose prose-zinc dark:prose-invert max-w-none">
         <MDXRemote
-          source={doc.source}
+          source={doc.content}
           options={{
             mdxOptions: {
               rehypePlugins: [rehypeHighlight, rehypeSlug],

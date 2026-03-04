@@ -1,5 +1,7 @@
 // ─── User ────────────────────────────────────────────────────────────────────
 
+export type UserRole = "user" | "admin";
+
 export interface User {
   id: string;
   wechatOpenId?: string;
@@ -7,6 +9,7 @@ export interface User {
   miniProgramOpenId?: string;
   nickname: string;
   avatarUrl?: string;
+  role: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +28,7 @@ export interface Course {
   slug: string;
   title: string;
   description: string;
+  content?: string;
   price: number; // in cents (分)
   coverUrl?: string;
   totalChapters: number;
@@ -38,6 +42,7 @@ export interface Chapter {
   courseId: string;
   index: number;
   title: string;
+  content?: string;
   videoId: string; // Tencent VOD FileId
   isFree: boolean;
   duration: number; // minutes

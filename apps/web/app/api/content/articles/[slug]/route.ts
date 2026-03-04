@@ -27,7 +27,7 @@ export async function GET(
       summary: article.summary,
       coverUrl: article.coverUrl,
       readingTime: article.readingTime,
-      source: article.source,
+      content: article.content,
     },
   });
 }
