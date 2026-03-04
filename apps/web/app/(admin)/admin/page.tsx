@@ -13,7 +13,7 @@ export default async function AdminDashboard(): Promise<React.JSX.Element> {
     { label: "文章", count: articleCount, href: "/admin/articles" },
     { label: "文档", count: docCount, href: "/admin/docs" },
     { label: "课程", count: courseCount, href: "/admin/courses" },
-    { label: "用户", count: userCount, href: "#" },
+    { label: "用户", count: userCount, href: "/admin/users" },
   ];
 
   const recentArticles = await prisma.article.findMany({
