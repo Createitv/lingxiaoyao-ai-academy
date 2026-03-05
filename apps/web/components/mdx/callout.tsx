@@ -50,23 +50,26 @@ const CALLOUT_TYPES: Record<
 export function Callout({ children }: CalloutProps) {
   // Try to detect callout type from first child text
   let type = "";
-  let content = children;
 
   // Check if children is an array-like structure with a <p> containing <strong>
   // MDX renders: > **Note:** text → <blockquote><p><strong>Note:</strong> text</p></blockquote>
-  if (children && typeof children === "object" && "props" in (children as any)) {
-    const props = (children as any).props;
-    if (props?.children) {
-      const firstChild = Array.isArray(props.children)
-        ? props.children[0]
-        : props.children;
+  const childObj = children as Record<string, unknown> | null;
+  if (childObj && typeof childObj === "object" && "props" in childObj) {
+    const props = childObj.props as Record<string, unknown> | undefined;
+    const pChildren = props?.children;
+    if (pChildren) {
+      const firstChild = Array.isArray(pChildren)
+        ? pChildren[0]
+        : pChildren;
 
+      const fc = firstChild as Record<string, unknown> | null;
       if (
-        firstChild &&
-        typeof firstChild === "object" &&
-        firstChild.type === "strong"
+        fc &&
+        typeof fc === "object" &&
+        fc.type === "strong"
       ) {
-        const strongText = String(firstChild.props?.children ?? "").replace(
+        const fcProps = fc.props as Record<string, unknown> | undefined;
+        const strongText = String(fcProps?.children ?? "").replace(
           /:$/,
           "",
         );

@@ -3,8 +3,8 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "turbo run dev",
-    "dev:web": "turbo run dev --filter=web",
+    "dev": "rm -rf apps/web/.next && turbo run dev",
+    "dev:web": "rm -rf apps/web/.next && turbo run dev --filter=web",
     "dev:app": "turbo run dev --filter=desktop",
     "dev:mp": "turbo run dev --filter=miniprogram",
     "build": "turbo run build",
@@ -29,7 +29,9 @@
   "pnpm": {
     "overrides": {
       "@types/react": "^19",
-      "@types/react-dom": "^19"
+      "@types/react-dom": "^19",
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
     }
   },
   "devDependencies": {

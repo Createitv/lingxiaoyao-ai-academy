@@ -20,8 +20,9 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
 
   // Extract language from className (e.g., "language-python" → "python")
   let language = "";
-  if (children && typeof children === "object" && "props" in (children as any)) {
-    const codeClassName = (children as any).props?.className ?? "";
+  const childObj = children as Record<string, unknown> | null;
+  if (childObj && typeof childObj === "object" && "props" in childObj) {
+    const codeClassName = String((childObj.props as Record<string, unknown>)?.className ?? "");
     const match = codeClassName.match(/language-(\w+)/);
     if (match) language = match[1];
   }
