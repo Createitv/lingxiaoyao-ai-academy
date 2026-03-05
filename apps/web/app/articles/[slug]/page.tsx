@@ -46,7 +46,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params }: ArticlePageProps): Promise<React.JSX.Element> {
   const { slug } = await params;
   const [article, user] = await Promise.all([
     getArticleBySlug(slug),

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "关于林逍遥 AI — AI 课程教育平台",
 };
 
-export default function AboutPage() {
+export default function AboutPage(): React.JSX.Element {
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <h1 className="text-3xl font-bold mb-6">关于我</h1>
