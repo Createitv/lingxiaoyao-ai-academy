@@ -3,8 +3,8 @@
  * Run BEFORE `next build` in the desktop build pipeline.
  * CI workspaces are disposable, so no restore step is needed.
  *
- * Strategy: aggressively remove server-dependent routes and patch remaining
- * pages for fully-static rendering.
+ * Strategy: aggressively remove server-dependent routes, stub auth modules,
+ * and patch remaining pages for fully-static rendering.
  */
 import { readFileSync, writeFileSync, rmSync, unlinkSync, existsSync } from "fs";
 import { join, dirname } from "path";
@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const appDir = join(__dirname, "..", "app");
+const libDir = join(__dirname, "..", "lib");
 
 let actions = 0;
 
@@ -20,13 +21,13 @@ function removeDir(rel) {
   if (existsSync(abs)) {
     rmSync(abs, { recursive: true, force: true });
     actions++;
-    console.log(`  rm -rf ${rel}/`);
+    console.log(`  rm -rf app/${rel}/`);
   }
 }
 
 function removeFile(rel) {
   const abs = join(appDir, rel);
-  try { unlinkSync(abs); actions++; console.log(`  rm     ${rel}`); } catch { /* skip */ }
+  try { unlinkSync(abs); actions++; console.log(`  rm     app/${rel}`); } catch { /* skip */ }
 }
 
 function patch(rel, transform) {
@@ -34,7 +35,16 @@ function patch(rel, transform) {
   try {
     const src = readFileSync(abs, "utf8");
     const out = transform(src);
-    if (out !== src) { writeFileSync(abs, out); actions++; console.log(`  patch  ${rel}`); }
+    if (out !== src) { writeFileSync(abs, out); actions++; console.log(`  patch  app/${rel}`); }
+  } catch { /* skip */ }
+}
+
+function writeLib(rel, content) {
+  const abs = join(libDir, rel);
+  try {
+    writeFileSync(abs, content);
+    actions++;
+    console.log(`  stub   lib/${rel}`);
   } catch { /* skip */ }
 }
 
@@ -56,17 +66,46 @@ removeDir("api");
 removeDir("(admin)");
 removeDir("dashboard");
 removeDir("payment");
-removeDir("courses/[slug]/[chapter]");
+// Dynamic-route pages that import getCurrentUser → session.ts → next/headers
+// are incompatible with output: 'export'. Remove entirely.
+removeDir("articles/[slug]");
+removeDir("courses/[slug]");
+// Nested series article pages — Prisma module loading prevents Next.js
+// from seeing generateStaticParams in output: 'export' context.
+removeDir("series/[seriesSlug]/[slug]");
 
 // ═══════════════════════════════════════════════════════════════════
-// 2. Remove OG image files (incompatible with static export)
+// 2. Remove OG image files (incompatible with static export —
+//    generateStaticParams is ignored in opengraph-image files)
 // ═══════════════════════════════════════════════════════════════════
 removeFile("opengraph-image.tsx");
-removeFile("articles/[slug]/opengraph-image.tsx");
-removeFile("courses/[slug]/opengraph-image.tsx");
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. Replace "force-dynamic" → "force-static"
+// 3. Stub auth/session.ts to eliminate next/headers from import chain
+//    Pages like articles/page.tsx import getCurrentUser which calls
+//    headers()/cookies() — these throw in static export context.
+// ═══════════════════════════════════════════════════════════════════
+writeLib("auth/session.ts", `\
+import type { User } from "@workspace/types";
+
+export async function getCurrentUser(): Promise<User | null> {
+  return null;
+}
+
+export function getSessionCookieOptions() {
+  return {
+    name: "lxy_session",
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: 0,
+  };
+}
+`);
+
+// ═══════════════════════════════════════════════════════════════════
+// 4. Replace "force-dynamic" → "force-static"
 // ═══════════════════════════════════════════════════════════════════
 for (const f of ["courses/page.tsx", "search/page.tsx"]) {
   patch(f, (src) =>
@@ -75,7 +114,7 @@ for (const f of ["courses/page.tsx", "search/page.tsx"]) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. Add force-static to pages using headers()/cookies()
+// 5. Add force-static to pages that need it
 // ═══════════════════════════════════════════════════════════════════
 for (const f of ["articles/page.tsx"]) {
   patch(f, (src) => {
@@ -85,7 +124,7 @@ for (const f of ["articles/page.tsx"]) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 5. Fix sitemap.ts — replace revalidate with force-static
+// 6. Fix sitemap.ts — replace revalidate with force-static
 // ═══════════════════════════════════════════════════════════════════
 patch("sitemap.ts", (src) =>
   src.replace(/export const revalidate = \d+;/, 'export const dynamic = "force-static";')
