@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "build:desktop": "BUILD_TARGET=desktop next build"
+    "build:desktop": "prisma generate && cross-env BUILD_TARGET=desktop next build"
   },
   "dependencies": {
     "@prisma/client": "^5.16.0",

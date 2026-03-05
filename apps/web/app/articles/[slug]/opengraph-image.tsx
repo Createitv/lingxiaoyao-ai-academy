@@ -1,16 +1,10 @@
 import { ImageResponse } from "next/og";
-import { getAllArticleSlugs, getArticleBySlug } from "@/lib/content/articles";
+import { getArticleBySlug } from "@/lib/content/articles";
 
 export const runtime = "nodejs";
 export const alt = "文章";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
 
 export default async function ArticleOgImage({
   params,

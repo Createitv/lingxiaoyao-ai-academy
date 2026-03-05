@@ -1,16 +1,10 @@
 import { ImageResponse } from "next/og";
-import { getAllCourseSlugs, getCourseBySlug } from "@/lib/content/courses";
+import { getCourseBySlug } from "@/lib/content/courses";
 
 export const runtime = "nodejs";
 export const alt = "课程";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const slugs = await getAllCourseSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
 
 export default async function CourseOgImage({
   params,

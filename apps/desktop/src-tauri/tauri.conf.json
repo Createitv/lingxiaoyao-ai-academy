@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "",
     "devUrl": "http://localhost:3000",
-    "beforeBuildCommand": "cd ../web && BUILD_TARGET=desktop pnpm build",
+    "beforeBuildCommand": "cd ../web && pnpm build:desktop",
     "frontendDist": "../web/out"
   },
   "app": {
