@@ -15,7 +15,7 @@ const OUTPUT_PATH = path.join(WEB_DIR, "public/search-index.json");
 
 interface IndexEntry {
   id: string;
-  type: "article" | "doc" | "course" | "chapter";
+  type: "article" | "course" | "chapter";
   title: string;
   content: string;
   summary: string;
@@ -47,22 +47,6 @@ async function buildArticleIndex(): Promise<IndexEntry[]> {
     content: stripMarkdown(a.content).slice(0, 2000),
     summary: a.summary,
     url: `/articles/${a.slug}`,
-  }));
-}
-
-async function buildDocIndex(): Promise<IndexEntry[]> {
-  const docs = await prisma.doc.findMany({
-    where: { publishedAt: { not: null } },
-    select: { slug: true, title: true, description: true, content: true },
-  });
-
-  return docs.map((d) => ({
-    id: `doc-${d.slug.replace(/\//g, "-")}`,
-    type: "doc" as const,
-    title: d.title,
-    content: stripMarkdown(d.content).slice(0, 2000),
-    summary: d.description ?? "",
-    url: `/docs/${d.slug}`,
   }));
 }
 
@@ -102,13 +86,12 @@ async function buildCourseIndex(): Promise<IndexEntry[]> {
 async function main() {
   console.log("Building search index from database...");
 
-  const [articles, docs, courses] = await Promise.all([
+  const [articles, courses] = await Promise.all([
     buildArticleIndex(),
-    buildDocIndex(),
     buildCourseIndex(),
   ]);
 
-  const index = [...articles, ...docs, ...courses];
+  const index = [...articles, ...courses];
 
   const publicDir = path.join(WEB_DIR, "public");
   if (!fs.existsSync(publicDir)) {
@@ -121,7 +104,6 @@ async function main() {
     `Search index built: ${index.length} entries → ${OUTPUT_PATH}`,
   );
   console.log(`   Articles: ${articles.length}`);
-  console.log(`   Docs: ${docs.length}`);
   console.log(`   Courses/Chapters: ${courses.length}`);
 }
 

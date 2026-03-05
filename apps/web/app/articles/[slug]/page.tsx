@@ -9,8 +9,9 @@ import { mdxComponents } from "@/components/mdx";
 import { WechatFollowCard } from "@workspace/ui/components/wechat-follow-card";
 import { ProgressButton } from "@workspace/ui/components/progress-button";
 import { CommentSectionWrapper } from "@/components/comment-section-wrapper";
-import { extractTocHeadings } from "@/lib/docs-utils";
-import { DocsToc } from "@/components/docs/docs-toc";
+import { extractTocHeadings } from "@/lib/toc-utils";
+import { Toc } from "@/components/toc";
+import { CopyMarkdownButton } from "@/components/articles/copy-markdown-button";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -155,6 +156,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     </div>
                   </>
                 )}
+                <span className="opacity-30">·</span>
+                <CopyMarkdownButton content={article.content} />
               </div>
             </div>
           </header>
@@ -186,7 +189,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
 
         {/* Right TOC */}
-        <DocsToc headings={headings} />
+        <Toc headings={headings} />
       </div>
     </>
   );

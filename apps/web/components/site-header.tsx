@@ -11,7 +11,6 @@ const navItems = [
   { href: "/", label: "首页" },
   { href: "/courses", label: "课程" },
   { href: "/articles", label: "文章" },
-  { href: "/docs", label: "文档" },
 ];
 
 interface UserInfo {

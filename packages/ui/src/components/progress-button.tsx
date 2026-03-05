@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { cn } from "../lib/utils";
 
 interface ProgressButtonProps {
-  contentType: "article" | "doc" | "chapter";
+  contentType: "article" | "chapter";
   contentSlug: string;
   isCompleted: boolean;
   className?: string;

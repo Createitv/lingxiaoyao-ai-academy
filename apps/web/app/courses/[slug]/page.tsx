@@ -8,6 +8,14 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { hasCoursePurchased } from "@/lib/db/user-courses";
 import { Button } from "@workspace/ui/components/button";
 
+export const revalidate = 0;
+
+const defaultCovers: Record<string, string> = {
+  "claude-for-everyone": "/courses/claude-for-everyone.svg",
+  "claude-api-development": "/courses/claude-api-development.svg",
+  "claude-api": "/courses/claude-api-development.svg",
+};
+
 interface CoursePageProps {
   params: Promise<{ slug: string }>;
 }
@@ -40,6 +48,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
+  const coverSrc = course.coverUrl || defaultCovers[slug];
   const user = await getCurrentUser();
   const purchased = user ? await hasCoursePurchased(user.id, course.id) : false;
 
@@ -143,10 +152,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
         {/* Sidebar / Purchase card */}
         <div className="lg:col-span-1">
           <div className="sticky top-8 border rounded-xl p-6 space-y-4">
-            {course.coverUrl && (
+            {coverSrc && (
               <div className="relative w-full aspect-video rounded-lg overflow-hidden">
                 <Image
-                  src={course.coverUrl}
+                  src={coverSrc}
                   alt={course.title}
                   fill
                   className="object-cover"

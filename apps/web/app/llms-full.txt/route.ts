@@ -1,14 +1,12 @@
 import { getAllArticles, getArticleBySlug } from "@/lib/content/articles";
-import { getAllDocs, getDocBySlug } from "@/lib/content/docs";
 import { getCourses } from "@/lib/content/courses";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
 
 export async function GET() {
-  const [articles, docs, courses] = await Promise.all([
+  const [articles, courses] = await Promise.all([
     getAllArticles(),
-    getAllDocs(),
     getCourses(),
   ]);
 
@@ -61,29 +59,6 @@ export async function GET() {
       sections.push(`发布日期: ${new Date(detail.date).toLocaleDateString("zh-CN")}`);
       if (detail.tags.length > 0) {
         sections.push(`标签: ${detail.tags.join(", ")}`);
-      }
-      sections.push("");
-      sections.push(detail.content);
-      sections.push("");
-      sections.push("---");
-      sections.push("");
-    }
-  }
-
-  // Full doc content
-  if (docs.length > 0) {
-    sections.push("# 参考文档");
-    sections.push("");
-    for (const doc of docs) {
-      const detail = await getDocBySlug(doc.slug);
-      if (!detail) continue;
-
-      sections.push(`## ${detail.title}`);
-      sections.push("");
-      sections.push(`URL: ${BASE_URL}/docs/${doc.slug.join("/")}`);
-      if (detail.description) {
-        sections.push("");
-        sections.push(detail.description);
       }
       sections.push("");
       sections.push(detail.content);

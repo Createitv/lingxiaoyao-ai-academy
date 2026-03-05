@@ -66,18 +66,6 @@ export interface Article extends ArticleFrontmatter {
   readingTime: number; // minutes
 }
 
-// ─── Doc ─────────────────────────────────────────────────────────────────────
-
-export interface DocFrontmatter {
-  title: string;
-  description?: string;
-  order?: number;
-}
-
-export interface Doc extends DocFrontmatter {
-  slug: string[];
-}
-
 // ─── Chapter MDX ─────────────────────────────────────────────────────────────
 
 export interface ChapterFrontmatter {
@@ -107,7 +95,7 @@ export interface Order {
 
 // ─── Comment ─────────────────────────────────────────────────────────────────
 
-export type ContentType = "article" | "doc" | "chapter";
+export type ContentType = "article" | "chapter";
 
 export interface Comment {
   id: string;
@@ -133,7 +121,7 @@ export interface UserProgress {
 
 // ─── Search ──────────────────────────────────────────────────────────────────
 
-export type SearchResultType = "article" | "doc" | "course" | "chapter";
+export type SearchResultType = "article" | "course" | "chapter";
 
 export interface SearchResult {
   type: SearchResultType;

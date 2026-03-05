@@ -274,6 +274,20 @@
   color: hsl(var(--muted-foreground));
 }
 
+/* Medium-zoom image lightbox */
+.medium-zoom-overlay {
+  z-index: 50;
+}
+
+.medium-zoom-image--opened {
+  z-index: 51;
+  border-radius: 0.5rem;
+}
+
+.article-detail img {
+  cursor: zoom-in;
+}
+
 /* Code block wrapper — styled by CodeBlock component, enhanced here */
 .article-detail .code-block-wrapper {
   @apply my-6 rounded-xl overflow-hidden;

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 export const dynamic = "force-dynamic";
 
 interface SearchResult {
-  type: "article" | "doc" | "course";
+  type: "article" | "course";
   slug: string;
   title: string;
   summary: string;
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const [articles, docs, courses] = await Promise.all([
+  const [articles, courses] = await Promise.all([
     prisma.article.findMany({
       where: {
         publishedAt: { not: null },
@@ -39,21 +39,6 @@ export async function GET(req: NextRequest) {
         summary: true,
         series: true,
         readingTime: true,
-      },
-    }),
-    prisma.doc.findMany({
-      where: {
-        publishedAt: { not: null },
-        OR: [
-          { title: { contains: q, mode: "insensitive" } },
-          { description: { contains: q, mode: "insensitive" } },
-        ],
-      },
-      take: 5,
-      select: {
-        slug: true,
-        title: true,
-        description: true,
       },
     }),
     prisma.course.findMany({
@@ -83,13 +68,6 @@ export async function GET(req: NextRequest) {
       summary: a.summary,
       url: `/articles/${a.slug}`,
       meta: { series: a.series, readingTime: a.readingTime },
-    })),
-    ...docs.map((d) => ({
-      type: "doc" as const,
-      slug: d.slug,
-      title: d.title,
-      summary: d.description ?? "",
-      url: `/docs/${d.slug}`,
     })),
     ...courses.map((c) => ({
       type: "course" as const,

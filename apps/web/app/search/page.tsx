@@ -7,12 +7,11 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "搜索",
-  description: "搜索文章、课程、文档等内容",
+  description: "搜索文章、课程等内容",
 };
 
 const typeLabels: Record<string, string> = {
   article: "文章",
-  doc: "文档",
   course: "课程",
 };
 
@@ -23,7 +22,7 @@ interface SearchPageProps {
 async function searchContent(q: string) {
   if (q.length < 2) return [];
 
-  const [articles, docs, courses] = await Promise.all([
+  const [articles, courses] = await Promise.all([
     prisma.article.findMany({
       where: {
         publishedAt: { not: null },
@@ -40,21 +39,6 @@ async function searchContent(q: string) {
         summary: true,
         series: true,
         readingTime: true,
-      },
-    }),
-    prisma.doc.findMany({
-      where: {
-        publishedAt: { not: null },
-        OR: [
-          { title: { contains: q, mode: "insensitive" } },
-          { description: { contains: q, mode: "insensitive" } },
-        ],
-      },
-      take: 10,
-      select: {
-        slug: true,
-        title: true,
-        description: true,
       },
     }),
     prisma.course.findMany({
@@ -84,12 +68,6 @@ async function searchContent(q: string) {
       url: `/articles/${a.slug}`,
       series: a.series,
       readingTime: a.readingTime,
-    })),
-    ...docs.map((d) => ({
-      type: "doc" as const,
-      title: d.title,
-      summary: d.description ?? "",
-      url: `/docs/${d.slug}`,
     })),
     ...courses.map((c) => ({
       type: "course" as const,
@@ -186,7 +164,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {!query && (
         <div className="text-center py-16">
           <p className="text-muted-foreground mb-4">
-            输入关键词搜索文章、课程和文档
+            输入关键词搜索文章和课程
           </p>
           <p className="text-sm text-muted-foreground">
             也可以使用{" "}

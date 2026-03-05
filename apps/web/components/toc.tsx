@@ -8,11 +8,11 @@ export interface TocItem {
   level: 2 | 3;
 }
 
-interface DocsTocProps {
+interface TocProps {
   headings: TocItem[];
 }
 
-export function DocsToc({ headings }: DocsTocProps) {
+export function Toc({ headings }: TocProps) {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {

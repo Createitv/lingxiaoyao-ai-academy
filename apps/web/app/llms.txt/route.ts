@@ -1,14 +1,12 @@
 import { getAllArticles } from "@/lib/content/articles";
-import { getAllDocs } from "@/lib/content/docs";
 import { getCourses } from "@/lib/content/courses";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
 
 export async function GET() {
-  const [articles, docs, courses] = await Promise.all([
+  const [articles, courses] = await Promise.all([
     getAllArticles(),
-    getAllDocs(),
     getCourses(),
   ]);
 
@@ -46,18 +44,6 @@ export async function GET() {
       lines.push(
         `- [${article.title}](${BASE_URL}/articles/${article.slug}): ${article.summary}${tagStr}`,
       );
-    }
-    lines.push("");
-  }
-
-  // Docs section
-  if (docs.length > 0) {
-    lines.push("## 参考文档");
-    lines.push("");
-    for (const doc of docs) {
-      const slug = doc.slug.join("/");
-      const desc = doc.description ? `: ${doc.description}` : "";
-      lines.push(`- [${doc.title}](${BASE_URL}/docs/${slug})${desc}`);
     }
     lines.push("");
   }

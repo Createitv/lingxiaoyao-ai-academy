@@ -6,7 +6,6 @@ import "./index.scss";
 
 const typeLabels: Record<string, string> = {
   article: "文章",
-  doc: "文档",
   course: "课程",
 };
 
@@ -41,7 +40,6 @@ export default function SearchPage() {
     const urlMap: Record<string, string> = {
       article: `/pages/article/index?slug=${item.slug}`,
       course: `/pages/course-detail/index?slug=${item.slug}`,
-      doc: `/pages/webview/index?url=${encodeURIComponent(item.url)}`,
     };
     const url = urlMap[item.type];
     if (url) Taro.navigateTo({ url });

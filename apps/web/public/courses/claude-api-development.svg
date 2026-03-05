@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F4C81"/>
+      <stop offset="50%" style="stop-color:#1E6DB5"/>
+      <stop offset="100%" style="stop-color:#0EA5E9"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="675" fill="url(#bg2)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="1000" cy="150" r="220" fill="white" opacity="0.05"/>
+  <circle cx="1100" cy="100" r="140" fill="white" opacity="0.03"/>
+  <circle cx="100" cy="580" r="160" fill="white" opacity="0.04"/>
+
+  <!-- Code block decoration -->
+  <g transform="translate(780, 120)" filter="url(#shadow2)">
+    <rect x="0" y="0" width="320" height="220" rx="16" fill="#0D1117" opacity="0.5"/>
+    <!-- Terminal header dots -->
+    <circle cx="24" cy="20" r="5" fill="#FF5F56" opacity="0.7"/>
+    <circle cx="44" cy="20" r="5" fill="#FFBD2E" opacity="0.7"/>
+    <circle cx="64" cy="20" r="5" fill="#27C93F" opacity="0.7"/>
+    <!-- Code lines -->
+    <g font-family="'SF Mono', 'Fira Code', monospace" font-size="14">
+      <text x="20" y="60" fill="#7EE787" opacity="0.8">const</text>
+      <text x="65" y="60" fill="#79C0FF" opacity="0.8"> client</text>
+      <text x="125" y="60" fill="white" opacity="0.6"> =</text>
+      <text x="145" y="60" fill="#FFA657" opacity="0.8"> new</text>
+      <text x="175" y="60" fill="#D2A8FF" opacity="0.8"> Anthropic</text>
+      <text x="270" y="60" fill="white" opacity="0.6">()</text>
+
+      <text x="20" y="90" fill="#7EE787" opacity="0.8">const</text>
+      <text x="65" y="90" fill="#79C0FF" opacity="0.8"> msg</text>
+      <text x="105" y="90" fill="white" opacity="0.6"> =</text>
+      <text x="120" y="90" fill="#7EE787" opacity="0.8"> await</text>
+
+      <text x="30" y="115" fill="#79C0FF" opacity="0.8">client</text>
+      <text x="80" y="115" fill="white" opacity="0.6">.</text>
+      <text x="87" y="115" fill="#D2A8FF" opacity="0.8">messages</text>
+      <text x="160" y="115" fill="white" opacity="0.6">.</text>
+      <text x="167" y="115" fill="#FFA657" opacity="0.8">create</text>
+      <text x="215" y="115" fill="white" opacity="0.6">({</text>
+
+      <text x="40" y="140" fill="#79C0FF" opacity="0.8">model</text>
+      <text x="85" y="140" fill="white" opacity="0.6">:</text>
+      <text x="95" y="140" fill="#A5D6FF" opacity="0.8">"claude-4"</text>
+      <text x="190" y="140" fill="white" opacity="0.6">,</text>
+
+      <text x="40" y="165" fill="#79C0FF" opacity="0.8">messages</text>
+      <text x="112" y="165" fill="white" opacity="0.6">: [...]</text>
+
+      <text x="30" y="195" fill="white" opacity="0.6">})</text>
+    </g>
+  </g>
+
+  <!-- API flow arrows -->
+  <g stroke="white" stroke-width="2" opacity="0.15" fill="none">
+    <path d="M720 200 L770 200" stroke-dasharray="6,4"/>
+    <path d="M720 240 L770 240" stroke-dasharray="6,4"/>
+    <polygon points="770,195 780,200 770,205" fill="white" opacity="0.15"/>
+    <polygon points="770,235 780,240 770,245" fill="white" opacity="0.15"/>
+  </g>
+
+  <!-- Decorative brackets -->
+  <g fill="white" opacity="0.08" font-family="'SF Mono', monospace" font-size="200" font-weight="300">
+    <text x="650" y="600">{</text>
+    <text x="1080" y="600">}</text>
+  </g>
+
+  <!-- Main text -->
+  <text x="80" y="250" fill="white" font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" letter-spacing="1">Claude API 开发实战</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="320" fill="white" opacity="0.85" font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="400">从 API 调用到 Agent 构建，掌握 AI 应用开发</text>
+
+  <!-- Divider -->
+  <rect x="80" y="350" width="80" height="4" rx="2" fill="white" opacity="0.5"/>
+
+  <!-- Tags -->
+  <g font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18">
+    <rect x="80" y="380" width="80" height="36" rx="18" fill="white" opacity="0.15"/>
+    <text x="120" y="404" text-anchor="middle" fill="white" opacity="0.9">API</text>
+
+    <rect x="180" y="380" width="100" height="36" rx="18" fill="white" opacity="0.15"/>
+    <text x="230" y="404" text-anchor="middle" fill="white" opacity="0.9">Agent</text>
+
+    <rect x="300" y="380" width="120" height="36" rx="18" fill="white" opacity="0.15"/>
+    <text x="360" y="404" text-anchor="middle" fill="white" opacity="0.9">TypeScript</text>
+
+    <rect x="440" y="380" width="120" height="36" rx="18" fill="white" opacity="0.15"/>
+    <text x="500" y="404" text-anchor="middle" fill="white" opacity="0.9">实战项目</text>
+  </g>
+
+  <!-- Brand -->
+  <text x="80" y="610" fill="white" opacity="0.5" font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18">lingxiaoyao.cn</text>
+</svg>

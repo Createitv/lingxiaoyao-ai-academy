@@ -57,6 +57,8 @@ scripts/update-beginner-tutorials.ts
 scripts/update-intermediate-tutorials.ts
 scripts/update-advanced-tutorials.ts
 scripts/generate-article-svgs.ts
+scripts/generate-article-covers.ts
+scripts/insert-article-svgs.ts
 scripts/upload-illustrations.ts
 scripts/svg-templates/
 scripts/migrate-content-to-db.ts

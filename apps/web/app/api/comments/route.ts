@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import type { ContentType } from "@workspace/types";
 
-const VALID_CONTENT_TYPES = ["article", "doc", "chapter"] as const;
+const VALID_CONTENT_TYPES = ["article", "chapter"] as const;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

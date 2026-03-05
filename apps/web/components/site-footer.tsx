@@ -7,11 +7,11 @@ const footerLinks = {
   学习: [
     { href: "/courses", label: "课程" },
     { href: "/articles", label: "文章" },
-    { href: "/docs", label: "文档" },
   ],
   关于: [
     { href: "/about", label: "关于我" },
     { href: "/dashboard", label: "学习中心" },
+    { href: "/feed.xml", label: "RSS 订阅" },
   ],
 };
 

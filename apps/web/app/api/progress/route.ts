@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import type { ContentType } from "@workspace/types";
 
-const VALID_CONTENT_TYPES = ["article", "doc", "chapter"] as const;
+const VALID_CONTENT_TYPES = ["article", "chapter"] as const;
 
 export async function GET(_request: NextRequest) {
   const user = await getCurrentUser();

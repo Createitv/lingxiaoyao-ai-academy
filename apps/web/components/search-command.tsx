@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 interface SearchEntry {
   id: string;
-  type: "article" | "doc" | "course" | "chapter";
+  type: "article" | "course" | "chapter";
   title: string;
   content: string;
   summary: string;
@@ -14,7 +14,6 @@ interface SearchEntry {
 
 const typeLabels: Record<string, string> = {
   article: "文章",
-  doc: "文档",
   course: "课程",
   chapter: "章节",
 };
@@ -138,7 +137,7 @@ export function SearchCommand() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="搜索文章、课程、文档..."
+            placeholder="搜索文章、课程..."
             className="flex h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
           <kbd className="hidden sm:inline-flex pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">

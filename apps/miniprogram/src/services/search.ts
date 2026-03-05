@@ -1,7 +1,7 @@
 import { request } from "@/utils/request";
 
 export interface SearchResult {
-  type: "article" | "doc" | "course";
+  type: "article" | "course";
   slug: string;
   title: string;
   summary: string;
