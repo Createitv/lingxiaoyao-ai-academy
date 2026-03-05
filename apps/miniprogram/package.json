@@ -28,8 +28,8 @@
     "@tarojs/shared": "^4.0.0",
     "@tarojs/taro": "^4.0.0",
     "@workspace/types": "workspace:*",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.29.0",
@@ -39,7 +39,7 @@
     "@tarojs/cli": "^4.0.0",
     "@tarojs/plugin-framework-react": "^4.0.0",
     "@tarojs/webpack5-runner": "^4.0.0",
-    "@types/react": "^18.3.0",
+    "@types/react": "^19",
     "babel-preset-taro": "^4.0.0",
     "sass": "^1.72.0",
     "typescript": "^5.5.0"
