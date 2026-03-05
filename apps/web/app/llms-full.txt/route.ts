@@ -3,6 +3,7 @@ import { getCourses } from "@/lib/content/courses";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+export const dynamic = "force-static";
 
 export async function GET() {
   const [articles, courses] = await Promise.all([

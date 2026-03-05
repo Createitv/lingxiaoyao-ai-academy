@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+export const dynamic = "force-static";
 
 const DISALLOW = ["/api/", "/dashboard/", "/payment/", "/admin/"];
 

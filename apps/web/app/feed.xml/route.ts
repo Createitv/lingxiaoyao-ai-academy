@@ -3,6 +3,7 @@ import { getLatestArticles } from "@/lib/content/articles";
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME ?? "林逍遥 AI";
+export const dynamic = "force-static";
 
 export async function GET() {
   const articles = await getLatestArticles(20);
