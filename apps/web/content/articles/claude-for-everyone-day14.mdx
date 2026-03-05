@@ -1,0 +1,224 @@
+---
+title: "21天学习Claude - Day 14：第二周总结——进阶技能实战检验"
+date: "2026-03-14"
+tags: ["Claude", "学习总结", "进阶实战"]
+series: "21天学习Claude"
+sortOrder: 14
+isFree: true
+summary: "第十四天：回顾第二周7大进阶技能。通过综合实战项目检验你的Claude使用水平，准备迎接第三周的高级挑战。"
+---
+
+# 第十四天：进阶技能实战检验
+
+恭喜你完成了第二周的学习！过去七天，你从基础使用者升级成了 Claude 的进阶用户。今天我们要做两件事：回顾本周所有技能，然后用一个综合实战项目来检验你的掌握程度。
+
+## 第二周技能树回顾
+
+让我们看看你这一周都解锁了哪些能力：
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%">
+  <rect x="10" y="10" width="700" height="380" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="360" y="46" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">第二周进阶技能树</text>
+  <line x1="360" y1="60" x2="360" y2="360" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="360" y1="100" x2="120" y2="100" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="120" cy="100" r="30" fill="#6366f1"/>
+  <text x="120" y="96" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 8</text>
+  <text x="120" y="110" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">结构化Prompt</text>
+  <line x1="360" y1="140" x2="600" y2="140" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="600" cy="140" r="30" fill="#3b82f6"/>
+  <text x="600" y="136" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 9</text>
+  <text x="600" y="150" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">数据分析</text>
+  <line x1="360" y1="180" x2="120" y2="180" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="120" cy="180" r="30" fill="#22c55e"/>
+  <text x="120" y="176" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 10</text>
+  <text x="120" y="190" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">头脑风暴</text>
+  <line x1="360" y1="220" x2="600" y2="220" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="600" cy="220" r="30" fill="#f59e0b"/>
+  <text x="600" y="216" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 11</text>
+  <text x="600" y="230" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">辅助编程</text>
+  <line x1="360" y1="260" x2="120" y2="260" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="120" cy="260" r="30" fill="#ef4444"/>
+  <text x="120" y="256" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 12</text>
+  <text x="120" y="270" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">结构化输出</text>
+  <line x1="360" y1="300" x2="600" y2="300" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="600" cy="300" r="30" fill="#a855f7"/>
+  <text x="600" y="296" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui, sans-serif">Day 13</text>
+  <text x="600" y="310" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">长文本处理</text>
+  <line x1="360" y1="340" x2="120" y2="340" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="80" y="318" width="80" height="44" rx="10" fill="#0f172a"/>
+  <text x="120" y="336" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui, sans-serif">Day 14</text>
+  <text x="120" y="352" text-anchor="middle" fill="white" font-size="9" font-family="system-ui, sans-serif">综合实战</text>
+  <circle cx="360" cy="100" r="5" fill="#6366f1"/>
+  <circle cx="360" cy="140" r="5" fill="#3b82f6"/>
+  <circle cx="360" cy="180" r="5" fill="#22c55e"/>
+  <circle cx="360" cy="220" r="5" fill="#f59e0b"/>
+  <circle cx="360" cy="260" r="5" fill="#ef4444"/>
+  <circle cx="360" cy="300" r="5" fill="#a855f7"/>
+  <circle cx="360" cy="340" r="5" fill="#0f172a"/>
+</svg>
+</div>
+
+快速回顾每个技能的核心要点：
+
+- **Day 8 结构化提示词**：用 XML 标签、分步指令、约束条件让 Prompt 精准可控
+- **Day 9 数据分析**：上传数据、发现趋势、从描述到诊断到预测的四层提问法
+- **Day 10 头脑风暴**：发散-收敛-评估三阶段，多角度思维和 SCAMPER 方法
+- **Day 11 辅助编程**：用自然语言描述需求，让 Claude 帮你写代码和自动化脚本
+- **Day 12 结构化输出**：表格、JSON、Markdown 格式指定和模板化输出
+- **Day 13 长文本处理**：渐进式阅读法、文档总结、多文档对比
+
+## 综合实战项目
+
+现在是检验学习成果的时候了。以下是一个综合实战项目，需要你运用本周学到的多种技能。
+
+**项目背景**：你是一个创业团队的核心成员，团队正在开发一款面向大学生的学习管理 App。现在需要在下周的投资人会议前完成一系列准备工作。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%">
+  <defs>
+    <marker id="d14arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1"/>
+    </marker>
+  </defs>
+  <rect x="10" y="10" width="680" height="320" rx="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="350" y="44" text-anchor="middle" fill="#1e3a5f" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">综合实战项目路径</text>
+  <rect x="30" y="65" width="180" height="80" rx="10" fill="#6366f1"/>
+  <text x="120" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">任务 1：市场调研</text>
+  <text x="120" y="115" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">技能：结构化Prompt</text>
+  <text x="120" y="130" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">+ 长文本处理</text>
+  <line x1="215" y1="105" x2="260" y2="105" stroke="#6366f1" stroke-width="2" marker-end="url(#d14arr)"/>
+  <rect x="265" y="65" width="180" height="80" rx="10" fill="#3b82f6"/>
+  <text x="355" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">任务 2：竞品分析</text>
+  <text x="355" y="115" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">技能：数据分析</text>
+  <text x="355" y="130" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">+ 结构化输出</text>
+  <line x1="450" y1="105" x2="495" y2="105" stroke="#3b82f6" stroke-width="2" marker-end="url(#d14arr)"/>
+  <rect x="500" y="65" width="180" height="80" rx="10" fill="#22c55e"/>
+  <text x="590" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">任务 3：功能规划</text>
+  <text x="590" y="115" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">技能：头脑风暴</text>
+  <text x="590" y="130" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">+ 评估矩阵</text>
+  <line x1="590" y1="150" x2="590" y2="175" stroke="#22c55e" stroke-width="2" marker-end="url(#d14arr)"/>
+  <rect x="500" y="180" width="180" height="80" rx="10" fill="#f59e0b"/>
+  <text x="590" y="210" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">任务 4：原型脚本</text>
+  <text x="590" y="230" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">技能：辅助编程</text>
+  <text x="590" y="245" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">+ 代码生成</text>
+  <line x1="495" y1="220" x2="450" y2="220" stroke="#f59e0b" stroke-width="2" marker-end="url(#d14arr)"/>
+  <rect x="265" y="180" width="180" height="80" rx="10" fill="#ef4444"/>
+  <text x="355" y="210" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">任务 5：BP 撰写</text>
+  <text x="355" y="230" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">技能：结构化输出</text>
+  <text x="355" y="245" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10" font-family="system-ui, sans-serif">+ 结构化Prompt</text>
+  <line x1="350" y1="265" x2="350" y2="290" stroke="#ef4444" stroke-width="2" marker-end="url(#d14arr)"/>
+  <rect x="215" y="290" width="270" height="30" rx="8" fill="#0f172a"/>
+  <text x="350" y="310" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">完成：投资人会议材料准备就绪</text>
+</svg>
+</div>
+
+### 任务一：市场调研（Day 8 + Day 13）
+
+使用结构化 Prompt 让 Claude 帮你分析大学生学习管理市场：
+
+```
+<role>你是一位教育科技行业的市场分析师</role>
+<context>我们计划开发一款面向中国大学生的学习管理App</context>
+<task>
+1. 分析中国大学生群体的学习痛点（至少5个）
+2. 评估学习管理类App的市场规模
+3. 描述目标用户画像（年龄、行为特征、付费意愿）
+4. 列出可能的盈利模式
+</task>
+<output_format>每个部分用二级标题分隔，数据用表格呈现</output_format>
+```
+
+### 任务二：竞品分析（Day 9 + Day 12）
+
+```
+请分析以下5款竞品App的核心数据，并以Markdown表格输出：
+Notion、Forest、番茄Todo、知犀思维导图、幕布
+
+表格列：App名称、核心功能、月活估计、付费模式、主要优势、主要不足
+```
+
+### 任务三：功能规划（Day 10）
+
+用头脑风暴三阶段法：先让 Claude 发散生成20个功能创意，再收敛筛选，最后用评估矩阵选出 MVP（最小可行产品）的核心功能。
+
+### 任务四：原型脚本（Day 11）
+
+```
+请帮我写一个简单的HTML原型页面，展示这个学习管理App的主界面。
+包含：今日课表、学习计时器、任务清单三个模块。
+要求：移动端优先，使用现代化的UI风格。
+```
+
+### 任务五：商业计划书（Day 8 + Day 12）
+
+```
+<role>你是一位有丰富经验的创业导师</role>
+<task>根据以上市场调研和竞品分析结果，撰写一份商业计划书大纲</task>
+<output_format>
+Markdown格式，包含以下章节：
+1. 执行摘要
+2. 市场分析
+3. 产品方案
+4. 商业模式
+5. 竞争策略
+6. 团队介绍（预留）
+7. 财务预测
+8. 融资需求
+</output_format>
+```
+
+## 自我评估清单
+
+完成实战项目后，用以下清单检查你的掌握程度：
+
+| 技能 | 能独立使用 | 还需练习 |
+|------|-----------|---------|
+| 结构化 Prompt（XML标签、分步指令） | | |
+| 数据分析（趋势发现、提问技巧） | | |
+| 头脑风暴（发散-收敛-评估） | | |
+| 辅助编程（描述需求、验证代码） | | |
+| 结构化输出（表格、JSON、Markdown） | | |
+| 长文本处理（渐进式阅读法） | | |
+
+## 学习进度总览
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%">
+  <rect x="10" y="10" width="680" height="160" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="350" y="42" text-anchor="middle" fill="#0f172a" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">21天学习之旅进度</text>
+  <rect x="40" y="65" width="190" height="85" rx="12" fill="#22c55e"/>
+  <text x="135" y="94" text-anchor="middle" fill="white" font-size="22" font-weight="bold" font-family="system-ui, sans-serif">Week 1</text>
+  <text x="135" y="116" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="13" font-family="system-ui, sans-serif">基础入门</text>
+  <text x="135" y="138" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12" font-family="system-ui, sans-serif">COMPLETED</text>
+  <rect x="255" y="65" width="190" height="85" rx="12" fill="#6366f1"/>
+  <text x="350" y="94" text-anchor="middle" fill="white" font-size="22" font-weight="bold" font-family="system-ui, sans-serif">Week 2</text>
+  <text x="350" y="116" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="13" font-family="system-ui, sans-serif">进阶技能</text>
+  <text x="350" y="138" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12" font-family="system-ui, sans-serif">COMPLETED</text>
+  <rect x="470" y="65" width="190" height="85" rx="12" fill="white" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <text x="565" y="94" text-anchor="middle" fill="#f59e0b" font-size="22" font-weight="bold" font-family="system-ui, sans-serif">Week 3</text>
+  <text x="565" y="116" text-anchor="middle" fill="#b45309" font-size="13" font-family="system-ui, sans-serif">高级挑战</text>
+  <text x="565" y="138" text-anchor="middle" fill="#d97706" font-size="12" font-family="system-ui, sans-serif">COMING NEXT</text>
+  <rect x="40" y="56" width="190" height="8" rx="4" fill="#16a34a"/>
+  <rect x="255" y="56" width="190" height="8" rx="4" fill="#4f46e5"/>
+  <rect x="470" y="56" width="190" height="8" rx="4" fill="#fde68a" stroke="#f59e0b" stroke-width="1"/>
+</svg>
+</div>
+
+## 第三周预告
+
+你已经掌握了 Claude 的基础和进阶技能，第三周我们要进入高级领域：
+
+- **Day 15**：多轮对话和上下文管理——让长对话保持高质量
+- **Day 16**：Claude Projects——组织和管理你的 AI 工作流
+- **Day 17**：Claude 与其他工具的联动——打造你的 AI 工具链
+- **Day 18**：验证 AI 输出——培养批判性思维
+- **Day 19**：自定义 Prompt 库——建立个人 AI 知识库
+- **Day 20**：团队协作中使用 Claude——最佳实践
+- **Day 21**：毕业项目——构建你的完整 AI 工作流
+
+## 今日小结
+
+第二周的学习让你从「会用 Claude」升级到了「善用 Claude」。结构化提示词让指令精准，数据分析让数字说话，头脑风暴让创意涌现，辅助编程让效率倍增，结构化输出让格式专业，长文本处理让阅读提速。这些技能组合在一起，就是一套完整的 AI 生产力工具箱。
+
+继续保持每天的练习，我们第三周见！

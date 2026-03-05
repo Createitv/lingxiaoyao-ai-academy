@@ -36,13 +36,29 @@ export async function generateMetadata({
   const course = await getCourseBySlug(slug);
   if (!course) return {};
 
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+  const courseUrl = `${BASE_URL}/courses/${slug}`;
+  const totalDuration = course.chapters.reduce((acc, ch) => acc + ch.duration, 0);
+
   return {
     title: course.title,
     description: course.description,
+    keywords: [course.title, "AI课程", "Claude", "在线课程", "视频教程", "人工智能"],
+    alternates: { canonical: courseUrl },
     openGraph: {
       title: course.title,
       description: course.description,
+      type: "website",
+      url: courseUrl,
+      locale: "zh_CN",
+      siteName: "林逍遥 AI",
       images: course.coverUrl ? [course.coverUrl] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: course.title,
+      description: `${course.description} | ${course.totalChapters}节课 · ${totalDuration}分钟`,
     },
   };
 }

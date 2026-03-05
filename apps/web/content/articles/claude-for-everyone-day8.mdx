@@ -1,0 +1,236 @@
+---
+title: "21天学习Claude - Day 8：Prompt进阶——结构化提示词的威力"
+date: "2026-03-08"
+tags: ["Claude", "Prompt进阶", "结构化提示"]
+series: "21天学习Claude"
+sortOrder: 8
+isFree: true
+summary: "第八天：从基础Prompt升级到结构化提示词。学会使用XML标签、分步指令和约束条件，让Claude的输出精准可控。"
+---
+
+# 第八天：结构化提示词的威力
+
+经过第一周的学习，你已经能和 Claude 进行基本对话了。但你可能发现，有时候 Claude 的回答不够精准，或者格式不符合预期。今天，我们要学习一个让 Claude 输出质量飞跃提升的技巧——**结构化提示词**。
+
+## 基础 Prompt 的局限
+
+先来看一个对比。假设你想让 Claude 帮你写一封催款邮件：
+
+**基础写法**：「帮我写一封催款邮件」
+
+**结构化写法**：
+```
+<role>你是一位经验丰富的商务沟通专家</role>
+<context>客户「星辰科技」的Q2项目尾款5万元已逾期15天</context>
+<task>撰写一封催款邮件</task>
+<constraints>
+- 语气专业但不失友好
+- 提及合同条款但不要威胁
+- 字数控制在200字以内
+- 提供明确的付款截止日期
+</constraints>
+<output_format>邮件格式，包含主题行</output_format>
+```
+
+结果会天差地别。结构化提示词就像给 Claude 一份精确的工作说明书，而不是随口吩咐。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%">
+  <defs>
+    <linearGradient id="d8g1a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.05"/>
+    </linearGradient>
+    <linearGradient id="d8g1b" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="320" height="240" rx="16" fill="url(#d8g1a)" stroke="#ef4444" stroke-width="2"/>
+  <rect x="370" y="10" width="320" height="240" rx="16" fill="url(#d8g1b)" stroke="#22c55e" stroke-width="2"/>
+  <rect x="60" y="24" width="220" height="32" rx="16" fill="#ef4444"/>
+  <text x="170" y="46" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">基础 Prompt</text>
+  <rect x="420" y="24" width="220" height="32" rx="16" fill="#22c55e"/>
+  <text x="530" y="46" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">结构化 Prompt</text>
+  <text x="170" y="90" text-anchor="middle" fill="#333" font-size="13" font-family="system-ui, sans-serif">「帮我写一封催款邮件」</text>
+  <text x="170" y="130" text-anchor="middle" fill="#999" font-size="12" font-family="system-ui, sans-serif">缺少背景信息</text>
+  <text x="170" y="152" text-anchor="middle" fill="#999" font-size="12" font-family="system-ui, sans-serif">格式不确定</text>
+  <text x="170" y="174" text-anchor="middle" fill="#999" font-size="12" font-family="system-ui, sans-serif">语气不可控</text>
+  <text x="170" y="196" text-anchor="middle" fill="#999" font-size="12" font-family="system-ui, sans-serif">长度随机</text>
+  <text x="170" y="232" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">输出质量：不稳定</text>
+  <text x="530" y="82" text-anchor="middle" fill="#333" font-size="12" font-family="system-ui, sans-serif">角色 + 背景 + 任务</text>
+  <text x="530" y="104" text-anchor="middle" fill="#333" font-size="12" font-family="system-ui, sans-serif">+ 约束 + 输出格式</text>
+  <text x="530" y="138" text-anchor="middle" fill="#16a34a" font-size="12" font-family="system-ui, sans-serif">背景清晰明确</text>
+  <text x="530" y="160" text-anchor="middle" fill="#16a34a" font-size="12" font-family="system-ui, sans-serif">格式精确指定</text>
+  <text x="530" y="182" text-anchor="middle" fill="#16a34a" font-size="12" font-family="system-ui, sans-serif">语气风格可控</text>
+  <text x="530" y="204" text-anchor="middle" fill="#16a34a" font-size="12" font-family="system-ui, sans-serif">长度有约束</text>
+  <text x="530" y="232" text-anchor="middle" fill="#22c55e" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">输出质量：稳定可靠</text>
+</svg>
+</div>
+
+## XML 标签：Claude 最喜欢的语言
+
+Claude 对 XML 标签有天然的理解能力。用 XML 标签组织你的提示词，就像给信息贴上标签，Claude 能准确理解每部分的含义。
+
+常用标签包括：
+
+- `<role>` — 指定 Claude 的角色身份
+- `<context>` — 提供背景信息
+- `<task>` — 明确要完成的任务
+- `<constraints>` — 设定限制条件
+- `<examples>` — 给出示例参考
+- `<output_format>` — 规定输出格式
+
+这些标签的名字不是固定的，你可以自定义。关键是**语义清晰、层次分明**。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%">
+  <rect x="10" y="10" width="580" height="320" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="300" y="40" text-anchor="middle" fill="#334155" font-size="16" font-weight="bold" font-family="system-ui, sans-serif">XML 标签嵌套结构</text>
+  <rect x="30" y="58" width="540" height="260" rx="8" fill="none" stroke="#6366f1" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="50" y="78" fill="#6366f1" font-size="13" font-family="monospace">&lt;prompt&gt;</text>
+  <rect x="50" y="88" width="500" height="40" rx="6" fill="#6366f1" opacity="0.12"/>
+  <text x="70" y="108" fill="#6366f1" font-size="12" font-family="monospace">&lt;role&gt;</text>
+  <text x="130" y="108" fill="#334155" font-size="12" font-family="system-ui, sans-serif">你是一位资深的市场分析师</text>
+  <text x="420" y="108" fill="#6366f1" font-size="12" font-family="monospace">&lt;/role&gt;</text>
+  <rect x="50" y="136" width="500" height="56" rx="6" fill="#3b82f6" opacity="0.1"/>
+  <text x="70" y="156" fill="#3b82f6" font-size="12" font-family="monospace">&lt;context&gt;</text>
+  <text x="160" y="156" fill="#334155" font-size="12" font-family="system-ui, sans-serif">我们公司正在考虑进入新能源汽车市场...</text>
+  <text x="70" y="178" fill="#3b82f6" font-size="12" font-family="monospace">&lt;/context&gt;</text>
+  <rect x="50" y="200" width="500" height="40" rx="6" fill="#22c55e" opacity="0.1"/>
+  <text x="70" y="220" fill="#22c55e" font-size="12" font-family="monospace">&lt;task&gt;</text>
+  <text x="120" y="220" fill="#334155" font-size="12" font-family="system-ui, sans-serif">分析进入该市场的优劣势，并给出建议</text>
+  <text x="460" y="220" fill="#22c55e" font-size="12" font-family="monospace">&lt;/task&gt;</text>
+  <rect x="50" y="248" width="500" height="54" rx="6" fill="#f59e0b" opacity="0.1"/>
+  <text x="70" y="268" fill="#f59e0b" font-size="12" font-family="monospace">&lt;output_format&gt;</text>
+  <text x="210" y="268" fill="#334155" font-size="12" font-family="system-ui, sans-serif">SWOT分析表格 + 300字总结</text>
+  <text x="70" y="288" fill="#f59e0b" font-size="12" font-family="monospace">&lt;/output_format&gt;</text>
+  <text x="50" y="312" fill="#6366f1" font-size="13" font-family="monospace">&lt;/prompt&gt;</text>
+</svg>
+</div>
+
+## 结构化 Prompt 的四大模块
+
+一个高质量的结构化 Prompt 通常包含四个核心模块。你不一定每次都需要全部使用，但了解这个框架会让你的提示词功力大增。
+
+**INSTRUCTIONS（指令）**：告诉 Claude 它的角色和总体任务方向。这是整个提示词的纲领。
+
+**CONTEXT（上下文）**：提供必要的背景信息、数据或参考材料。信息越具体，Claude 的回答越精准。
+
+**TASK（任务）**：明确具体要完成什么。分步骤列出效果最佳。
+
+**OUTPUT（输出）**：规定输出的格式、长度、风格和其他约束条件。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%">
+  <rect x="10" y="10" width="680" height="280" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="350" y="44" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">结构化 Prompt 四模块模板</text>
+  <rect x="30" y="65" width="310" height="100" rx="10" fill="#6366f1"/>
+  <text x="185" y="95" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="system-ui, sans-serif">INSTRUCTIONS 指令</text>
+  <text x="185" y="118" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">定义角色、能力边界、总体方向</text>
+  <text x="185" y="138" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">例：你是一位10年经验的财务顾问</text>
+  <rect x="360" y="65" width="310" height="100" rx="10" fill="#3b82f6"/>
+  <text x="515" y="95" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="system-ui, sans-serif">CONTEXT 上下文</text>
+  <text x="515" y="118" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">背景信息、数据、参考资料</text>
+  <text x="515" y="138" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">例：公司年收入500万，成本占比60%</text>
+  <rect x="30" y="180" width="310" height="100" rx="10" fill="#22c55e"/>
+  <text x="185" y="210" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="system-ui, sans-serif">TASK 任务</text>
+  <text x="185" y="233" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">具体要做的事情，分步骤列出</text>
+  <text x="185" y="253" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">例：1.分析利润率 2.找出节省空间</text>
+  <rect x="360" y="180" width="310" height="100" rx="10" fill="#f59e0b"/>
+  <text x="515" y="210" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="system-ui, sans-serif">OUTPUT 输出</text>
+  <text x="515" y="233" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">格式、长度、风格、语言</text>
+  <text x="515" y="253" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-family="system-ui, sans-serif">例：Markdown表格，中文，500字以内</text>
+</svg>
+</div>
+
+## 分步指令的力量
+
+当任务比较复杂时，用编号列出步骤会让 Claude 的执行更可靠。Claude 会严格按照步骤顺序执行，不会遗漏任何一步。
+
+比如你想让 Claude 帮你分析一篇竞品报告，可以这样写：
+
+```
+<task>
+请按以下步骤分析这篇竞品报告：
+1. 首先提取报告中提到的所有竞品名称
+2. 为每个竞品列出其核心优势和劣势
+3. 与我们的产品进行对比分析
+4. 给出3条可执行的竞争策略建议
+5. 用一段话总结最关键的发现
+</task>
+```
+
+这种「合同式」的提示词写法，让 Claude 的输出变得可预测、可检查。你可以逐步验证每一步是否正确完成。
+
+## 约束条件：给 Claude 画边界
+
+约束条件是结构化提示词的秘密武器。它告诉 Claude「什么不要做」或「必须遵守什么规则」。
+
+常见的约束类型包括：
+
+- **内容约束**：只讨论某个主题，不偏离
+- **格式约束**：必须使用表格、列表或特定模板
+- **长度约束**：字数上限或下限
+- **风格约束**：正式、口语化、学术风格
+- **安全约束**：不做假设、不编造数据
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 660 240" xmlns="http://www.w3.org/2000/svg" style="max-width:660px;width:100%">
+  <rect x="10" y="10" width="640" height="220" rx="16" fill="#fefce8" stroke="#f59e0b" stroke-width="2"/>
+  <text x="330" y="44" text-anchor="middle" fill="#92400e" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">输出质量提升效果对比</text>
+  <rect x="40" y="70" width="100" height="130" rx="8" fill="#fecaca"/>
+  <rect x="40" y="130" width="100" height="70" rx="0 0 8 8" fill="#ef4444"/>
+  <text x="90" y="172" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">35%</text>
+  <text x="90" y="218" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">无结构</text>
+  <rect x="170" y="70" width="100" height="130" rx="8" fill="#fde68a"/>
+  <rect x="170" y="100" width="100" height="100" rx="0 0 8 8" fill="#f59e0b"/>
+  <text x="220" y="158" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">60%</text>
+  <text x="220" y="218" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">基础结构</text>
+  <rect x="300" y="70" width="100" height="130" rx="8" fill="#bbf7d0"/>
+  <rect x="300" y="82" width="100" height="118" rx="0 0 8 8" fill="#22c55e"/>
+  <text x="350" y="148" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">85%</text>
+  <text x="350" y="218" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">XML标签</text>
+  <rect x="430" y="70" width="100" height="130" rx="8" fill="#c7d2fe"/>
+  <rect x="430" y="74" width="100" height="126" rx="0 0 8 8" fill="#6366f1"/>
+  <text x="480" y="144" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">95%</text>
+  <text x="480" y="218" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">完整结构化</text>
+  <line x1="560" y1="75" x2="560" y2="200" stroke="#d97706" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="600" y="100" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">首次</text>
+  <text x="600" y="116" text-anchor="middle" fill="#92400e" font-size="11" font-family="system-ui, sans-serif">满意率</text>
+</svg>
+</div>
+
+## 实战练习
+
+试试把你常用的一个 Prompt 改造成结构化版本。比如：
+
+**原版**：「帮我写个周报」
+
+**改造后**：
+```
+<role>你是我的工作助手</role>
+<context>
+本周完成的工作：
+- 完成了客户方案v2的设计
+- 参加了3次项目会议
+- 解决了生产环境的一个bug
+</context>
+<task>根据以上内容撰写一份周报</task>
+<constraints>
+- 用"本周完成"和"下周计划"两个部分
+- 每条用数据量化成果
+- 语气专业简洁
+- 总字数200字以内
+</constraints>
+```
+
+你会发现，花30秒多写几行结构化指令，能节省你来回修改的好几分钟。这就是结构化提示词的威力。
+
+## 今日小结
+
+结构化提示词的核心理念只有一句话：**把你脑中的期望，用清晰的结构告诉 Claude**。XML 标签、分步指令、约束条件，这三个工具组合起来，就能让 Claude 变成一个精准执行的专业助手。
+
+## 明天预告
+
+明天我们学习如何用 Claude 做数据分析——即使你不会 Excel 公式，Claude 也能帮你看懂数字背后的故事。

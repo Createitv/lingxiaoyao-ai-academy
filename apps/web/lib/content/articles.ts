@@ -52,7 +52,7 @@ export async function getAllArticles(): Promise<ArticleListItem[]> {
   const articles = await withDatabaseFallback(
     () =>
       prisma.article.findMany({
-        where: { publishedAt: { not: null }, series: null },
+        where: { publishedAt: { not: null } },
         orderBy: { publishedAt: "desc" },
       }),
     [],
@@ -60,6 +60,22 @@ export async function getAllArticles(): Promise<ArticleListItem[]> {
   );
 
   return articles.map(mapArticle);
+}
+
+export async function getAllSeries(): Promise<string[]> {
+  const results = await withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { publishedAt: { not: null }, series: { not: null } },
+        select: { series: true },
+        distinct: ["series"],
+        orderBy: { series: "asc" },
+      }),
+    [],
+    "getAllSeries",
+  );
+
+  return results.map((r) => r.series).filter(Boolean) as string[];
 }
 
 export async function getSeriesArticles(

@@ -1,0 +1,221 @@
+---
+title: "21天学习Claude - Day 18：打造你的Prompt模板库——提高效率的秘诀"
+date: "2026-03-18"
+tags: ["Claude", "Prompt模板", "效率工具"]
+series: "21天学习Claude"
+sortOrder: 18
+isFree: true
+summary: "第十八天：高手都有自己的Prompt模板库。学会创建、分类和管理常用提示词模板，让重复性工作一键完成。"
+---
+
+# 第十八天：打造你的Prompt模板库——提高效率的秘诀
+
+你有没有发现，很多时候你问 Claude 的问题其实大同小异？写邮件、做总结、分析数据……每次都要重新组织提示词，既费时又容易遗漏关键要素。今天我们来解决这个问题——建立你自己的 **Prompt 模板库**。
+
+## 为什么需要模板库？
+
+一个好的 Prompt 模板库能帮你：
+- **节省时间**：常用场景一键调用，不用每次重新想提示词
+- **保证质量**：经过反复优化的模板，输出质量更稳定
+- **团队共享**：好的模板可以分享给同事，整个团队都受益
+- **持续进化**：模板不是一成不变的，每次使用都可以迭代改进
+
+## 模板的核心结构
+
+一个优秀的 Prompt 模板由三个核心变量组成，像填空题一样灵活适配各种场景。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%">
+  <rect width="600" height="200" rx="12" fill="#f8fafc"/>
+  <text x="300" y="30" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">Prompt 模板三要素</text>
+  <rect x="30" y="50" width="160" height="90" rx="10" fill="#6366f1"/>
+  <text x="110" y="80" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">[角色]</text>
+  <text x="110" y="100" text-anchor="middle" fill="#c7d2fe" font-size="11" font-family="system-ui, sans-serif">你是谁？什么背景？</text>
+  <text x="110" y="118" text-anchor="middle" fill="#c7d2fe" font-size="11" font-family="system-ui, sans-serif">什么风格？</text>
+  <text x="210" y="95" fill="#94a3b8" font-size="24" font-family="system-ui, sans-serif">+</text>
+  <rect x="230" y="50" width="160" height="90" rx="10" fill="#22c55e"/>
+  <text x="310" y="80" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">[任务]</text>
+  <text x="310" y="100" text-anchor="middle" fill="#dcfce7" font-size="11" font-family="system-ui, sans-serif">做什么？产出什么？</text>
+  <text x="310" y="118" text-anchor="middle" fill="#dcfce7" font-size="11" font-family="system-ui, sans-serif">什么格式？</text>
+  <text x="410" y="95" fill="#94a3b8" font-size="24" font-family="system-ui, sans-serif">+</text>
+  <rect x="430" y="50" width="150" height="90" rx="10" fill="#f59e0b"/>
+  <text x="505" y="80" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">[约束]</text>
+  <text x="505" y="100" text-anchor="middle" fill="#fef3c7" font-size="11" font-family="system-ui, sans-serif">有什么限制？</text>
+  <text x="505" y="118" text-anchor="middle" fill="#fef3c7" font-size="11" font-family="system-ui, sans-serif">不该做什么？</text>
+  <rect x="100" y="158" width="400" height="28" rx="14" fill="#6366f1" opacity="0.08"/>
+  <text x="300" y="177" text-anchor="middle" fill="#4338ca" font-size="12" font-family="system-ui, sans-serif">模板 = 角色定位 + 任务描述 + 约束条件（可填变量）</text>
+</svg>
+</div>
+
+在模板中，你可以把需要每次修改的部分用方括号标记为变量，比如 `[收件人姓名]`、`[邮件主题]`、`[关键要点]`。这样使用时只需要填入变量值即可。
+
+## 模板分类管理
+
+随着模板越来越多，良好的分类体系变得很重要。推荐按工作场景分类。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%">
+  <rect width="600" height="320" rx="12" fill="#f8fafc"/>
+  <text x="300" y="30" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">模板库分类架构</text>
+  <rect x="220" y="48" width="160" height="36" rx="18" fill="#6366f1"/>
+  <text x="300" y="71" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">我的 Prompt 模板库</text>
+  <line x1="300" y1="84" x2="300" y2="110" stroke="#6366f1" stroke-width="2"/>
+  <line x1="100" y1="110" x2="500" y2="110" stroke="#6366f1" stroke-width="2"/>
+  <line x1="100" y1="110" x2="100" y2="130" stroke="#6366f1" stroke-width="2"/>
+  <line x1="250" y1="110" x2="250" y2="130" stroke="#6366f1" stroke-width="2"/>
+  <line x1="400" y1="110" x2="400" y2="130" stroke="#6366f1" stroke-width="2"/>
+  <line x1="500" y1="110" x2="500" y2="130" stroke="#6366f1" stroke-width="2"/>
+  <rect x="40" y="130" width="120" height="30" rx="6" fill="#3b82f6"/>
+  <text x="100" y="150" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="system-ui, sans-serif">沟通类</text>
+  <rect x="190" y="130" width="120" height="30" rx="6" fill="#22c55e"/>
+  <text x="250" y="150" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="system-ui, sans-serif">分析类</text>
+  <rect x="340" y="130" width="120" height="30" rx="6" fill="#f59e0b"/>
+  <text x="400" y="150" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="system-ui, sans-serif">创作类</text>
+  <rect x="440" y="130" width="120" height="30" rx="6" fill="#ef4444"/>
+  <text x="500" y="150" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="system-ui, sans-serif">管理类</text>
+  <rect x="30" y="175" width="140" height="130" rx="6" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="100" y="195" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">商务邮件</text>
+  <text x="100" y="212" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">客户回复</text>
+  <text x="100" y="229" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">会议纪要</text>
+  <text x="100" y="246" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">感谢信</text>
+  <text x="100" y="263" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">道歉信</text>
+  <text x="100" y="280" text-anchor="middle" fill="#1e40af" font-size="10" font-family="system-ui, sans-serif">跨部门协调</text>
+  <rect x="185" y="175" width="130" height="130" rx="6" fill="white" stroke="#22c55e" stroke-width="1"/>
+  <text x="250" y="195" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">数据分析</text>
+  <text x="250" y="212" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">竞品对比</text>
+  <text x="250" y="229" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">市场调研</text>
+  <text x="250" y="246" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">SWOT 分析</text>
+  <text x="250" y="263" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">用户反馈归类</text>
+  <text x="250" y="280" text-anchor="middle" fill="#166534" font-size="10" font-family="system-ui, sans-serif">风险评估</text>
+  <rect x="335" y="175" width="130" height="130" rx="6" fill="white" stroke="#f59e0b" stroke-width="1"/>
+  <text x="400" y="195" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">文案撰写</text>
+  <text x="400" y="212" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">社交媒体</text>
+  <text x="400" y="229" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">头脑风暴</text>
+  <text x="400" y="246" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">产品描述</text>
+  <text x="400" y="263" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">公告通知</text>
+  <text x="400" y="280" text-anchor="middle" fill="#92400e" font-size="10" font-family="system-ui, sans-serif">故事创作</text>
+  <rect x="480" y="175" width="100" height="130" rx="6" fill="white" stroke="#ef4444" stroke-width="1"/>
+  <text x="530" y="195" text-anchor="middle" fill="#991b1b" font-size="10" font-family="system-ui, sans-serif">周报模板</text>
+  <text x="530" y="212" text-anchor="middle" fill="#991b1b" font-size="10" font-family="system-ui, sans-serif">项目复盘</text>
+  <text x="530" y="229" text-anchor="middle" fill="#991b1b" font-size="10" font-family="system-ui, sans-serif">OKR 制定</text>
+  <text x="530" y="246" text-anchor="middle" fill="#991b1b" font-size="10" font-family="system-ui, sans-serif">团队反馈</text>
+  <text x="530" y="263" text-anchor="middle" fill="#991b1b" font-size="10" font-family="system-ui, sans-serif">培训计划</text>
+</svg>
+</div>
+
+## 五大必备模板
+
+无论你从事什么行业，以下五个模板几乎人人都用得到。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%">
+  <rect width="600" height="210" rx="12" fill="#f8fafc"/>
+  <text x="300" y="28" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">五大必备 Prompt 模板</text>
+  <rect x="15" y="48" width="106" height="145" rx="8" fill="white" stroke="#6366f1" stroke-width="2"/>
+  <rect x="15" y="48" width="106" height="32" rx="8" fill="#6366f1"/>
+  <rect x="15" y="65" width="106" height="15" fill="#6366f1"/>
+  <text x="68" y="68" text-anchor="middle" fill="white" font-size="18" font-family="system-ui, sans-serif">✉</text>
+  <text x="68" y="100" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="bold" font-family="system-ui, sans-serif">邮件模板</text>
+  <text x="68" y="118" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">商务邮件</text>
+  <text x="68" y="132" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">回复/跟进</text>
+  <text x="68" y="146" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">约定会议</text>
+  <text x="68" y="175" text-anchor="middle" fill="#6366f1" font-size="9" font-weight="600" font-family="system-ui, sans-serif">使用频率最高</text>
+  <rect x="131" y="48" width="106" height="145" rx="8" fill="white" stroke="#22c55e" stroke-width="2"/>
+  <rect x="131" y="48" width="106" height="32" rx="8" fill="#22c55e"/>
+  <rect x="131" y="65" width="106" height="15" fill="#22c55e"/>
+  <text x="184" y="68" text-anchor="middle" fill="white" font-size="18" font-family="system-ui, sans-serif">📋</text>
+  <text x="184" y="100" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="bold" font-family="system-ui, sans-serif">总结模板</text>
+  <text x="184" y="118" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">文章摘要</text>
+  <text x="184" y="132" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">会议总结</text>
+  <text x="184" y="146" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">项目周报</text>
+  <text x="184" y="175" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600" font-family="system-ui, sans-serif">节省时间利器</text>
+  <rect x="247" y="48" width="106" height="145" rx="8" fill="white" stroke="#3b82f6" stroke-width="2"/>
+  <rect x="247" y="48" width="106" height="32" rx="8" fill="#3b82f6"/>
+  <rect x="247" y="65" width="106" height="15" fill="#3b82f6"/>
+  <text x="300" y="68" text-anchor="middle" fill="white" font-size="18" font-family="system-ui, sans-serif">📊</text>
+  <text x="300" y="100" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="bold" font-family="system-ui, sans-serif">分析模板</text>
+  <text x="300" y="118" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">SWOT 分析</text>
+  <text x="300" y="132" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">竞品分析</text>
+  <text x="300" y="146" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">数据解读</text>
+  <text x="300" y="175" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600" font-family="system-ui, sans-serif">决策好帮手</text>
+  <rect x="363" y="48" width="106" height="145" rx="8" fill="white" stroke="#f59e0b" stroke-width="2"/>
+  <rect x="363" y="48" width="106" height="32" rx="8" fill="#f59e0b"/>
+  <rect x="363" y="65" width="106" height="15" fill="#f59e0b"/>
+  <text x="416" y="68" text-anchor="middle" fill="white" font-size="18" font-family="system-ui, sans-serif">💡</text>
+  <text x="416" y="100" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="bold" font-family="system-ui, sans-serif">创意模板</text>
+  <text x="416" y="118" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">头脑风暴</text>
+  <text x="416" y="132" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">方案发散</text>
+  <text x="416" y="146" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">灵感激发</text>
+  <text x="416" y="175" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600" font-family="system-ui, sans-serif">创新突破口</text>
+  <rect x="479" y="48" width="106" height="145" rx="8" fill="white" stroke="#ef4444" stroke-width="2"/>
+  <rect x="479" y="48" width="106" height="32" rx="8" fill="#ef4444"/>
+  <rect x="479" y="65" width="106" height="15" fill="#ef4444"/>
+  <text x="532" y="68" text-anchor="middle" fill="white" font-size="18" font-family="system-ui, sans-serif">🔍</text>
+  <text x="532" y="100" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="bold" font-family="system-ui, sans-serif">审查模板</text>
+  <text x="532" y="118" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">文档校对</text>
+  <text x="532" y="132" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">逻辑检查</text>
+  <text x="532" y="146" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui, sans-serif">合规审查</text>
+  <text x="532" y="175" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600" font-family="system-ui, sans-serif">质量守门员</text>
+</svg>
+</div>
+
+### 模板示例：商务邮件
+
+```
+你是一位经验丰富的商务沟通专家，擅长写正式但不生硬的中文邮件。
+
+请帮我写一封邮件：
+- 收件人：[收件人职位和姓名]
+- 目的：[邮件目的]
+- 关键要点：[1-3个要传达的核心信息]
+- 语气：[专业正式 / 友好亲切 / 紧急重要]
+- 字数：控制在[200/300/500]字以内
+
+要求：开头称呼得体，正文条理清晰，结尾有明确的行动号召。
+```
+
+### 模板示例：内容总结
+
+```
+请阅读以下内容，并按要求总结：
+
+[粘贴原文内容]
+
+总结要求：
+1. 一句话核心观点（不超过30字）
+2. 3-5个关键要点（每点一句话）
+3. 对[目标读者]的实际意义
+4. 如果有数据，请保留关键数字
+
+输出格式：Markdown，使用标题和要点列表。
+```
+
+## 模板迭代方法
+
+模板不是一次写好就完事了。每次使用后，记录什么地方效果好、什么地方需要改进。推荐一个简单的迭代流程：
+
+1. **首次使用**：记录 Claude 的输出质量（1-5 分）
+2. **发现问题**：输出太长？格式不对？遗漏要素？
+3. **调整模板**：针对问题修改角色描述、任务细节或约束条件
+4. **再次测试**：验证修改是否有效
+5. **固化版本**：效果满意后标注版本号（V1、V2...）
+
+建议用 Notion、飞书文档或简单的 Markdown 文件来管理你的模板库。每个模板记录：模板名称、适用场景、最新版本、上次更新日期。
+
+**关于模板的共享**：如果你在团队中工作，强烈建议把优质模板共享给同事。你可以建立一个团队模板库，每个人贡献自己领域的最佳模板，整个团队的 AI 使用水平都会提升。好的模板是一种知识资产，越分享越有价值。
+
+## 实操任务
+
+今天的练习：创建你的第一个模板。
+
+1. 选一个你每周至少用 2 次以上的场景
+2. 按照 [角色] + [任务] + [约束] 的结构写一个模板
+3. 标注出需要每次填写的变量（用方括号）
+4. 用实际内容测试一次
+5. 根据输出质量做第一次迭代
+
+当你积累到 10 个以上高质量模板时，你会感受到效率的飞跃。
+
+## 明天预告
+
+明天我们学习如何把 Claude 真正融入你的日常工作流——从早晨规划到晚间复盘，让 AI 成为你工作中的隐形助手。

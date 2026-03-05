@@ -1,22 +1,55 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAllArticles } from "@/lib/content/articles";
+import { getAllArticles, getAllSeries } from "@/lib/content/articles";
 import { ArticleCover } from "@/components/article-cover";
 import { getCurrentUser } from "@/lib/auth/session";
-
-export const metadata: Metadata = {
-  title: "教程文章",
-  description: "免费 AI 教程、Claude 使用技巧，持续更新。",
-};
 
 interface ArticlesPageProps {
   searchParams: Promise<{ series?: string }>;
 }
 
+export async function generateMetadata({
+  searchParams,
+}: ArticlesPageProps): Promise<Metadata> {
+  const { series } = await searchParams;
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+
+  if (series) {
+    return {
+      title: `${series} — 免费教程系列`,
+      description: `${series}系列全部文章。系统学习 AI 工具使用技巧，所有文章免费阅读。`,
+      keywords: [series, "Claude", "AI教程", "免费教程", "人工智能"],
+      alternates: {
+        canonical: `${BASE_URL}/articles?series=${encodeURIComponent(series)}`,
+      },
+      openGraph: {
+        title: `${series} — 免费教程系列`,
+        description: `${series}系列全部文章。系统学习 AI 工具使用技巧，所有文章免费阅读。`,
+        type: "website",
+        url: `${BASE_URL}/articles?series=${encodeURIComponent(series)}`,
+        locale: "zh_CN",
+        siteName: "林逍遥 AI",
+      },
+    };
+  }
+
+  return {
+    title: "教程文章",
+    description:
+      "免费 AI 教程、Claude 使用技巧，持续更新。21天学习Claude系列带你从入门到精通。",
+    keywords: ["AI教程", "Claude教程", "Prompt工程", "免费教程", "人工智能"],
+    alternates: {
+      canonical: `${BASE_URL}/articles`,
+    },
+  };
+}
+
 export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
   const { series } = await searchParams;
-  const [articles, user] = await Promise.all([
+  const [articles, allSeries, user] = await Promise.all([
     getAllArticles(),
+    getAllSeries(),
     getCurrentUser(),
   ]);
   const isAdmin = user?.role === "admin";
@@ -31,7 +64,42 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
     ? [...filtered].sort((a, b) => a.sortOrder - b.sortOrder)
     : filtered;
 
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: series ? `${series} — 免费教程系列` : "教程文章",
+    description: series
+      ? `${series}系列全部文章`
+      : "免费 AI 教程、Claude 使用技巧",
+    url: series
+      ? `${BASE_URL}/articles?series=${encodeURIComponent(series)}`
+      : `${BASE_URL}/articles`,
+    publisher: {
+      "@type": "Organization",
+      name: "林逍遥 AI",
+      url: BASE_URL,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: displayed.length,
+      itemListElement: displayed.map((a, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `${BASE_URL}/articles/${a.slug}`,
+        name: a.title,
+      })),
+    },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div className="px-6 py-8 lg:px-10">
       <h1 className="text-2xl font-bold mb-2">
         {series ?? "教程文章"}
@@ -40,27 +108,33 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         系统学习 AI 工具使用技巧，所有文章免费阅读。
       </p>
 
-      {/* Back to all link when filtering */}
-      {series && (
-        <Link
-          href="/articles"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {/* Series filter tabs */}
+      {allSeries.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Link
+            href="/articles"
+            className={`inline-flex items-center rounded-full px-3 py-1 text-sm transition-colors ${
+              !series
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
           >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-          返回全部文章
-        </Link>
+            全部
+          </Link>
+          {allSeries.map((s) => (
+            <Link
+              key={s}
+              href={`/articles?series=${encodeURIComponent(s)}`}
+              className={`inline-flex items-center rounded-full px-3 py-1 text-sm transition-colors ${
+                series === s
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {s}
+            </Link>
+          ))}
+        </div>
       )}
 
       {/* Article cards */}
@@ -134,5 +208,6 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         </div>
       )}
     </div>
+    </>
   );
 }

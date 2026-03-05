@@ -25,12 +25,33 @@ export async function generateMetadata({
   params,
 }: ChapterPageProps): Promise<Metadata> {
   const { slug, chapter } = await params;
-  const chapterContent = await getChapterContent(slug, parseInt(chapter));
+  const chapterIndex = parseInt(chapter);
+  const chapterContent = await getChapterContent(slug, chapterIndex);
   if (!chapterContent) return {};
+
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+  const chapterUrl = `${BASE_URL}/courses/${slug}/${chapter}`;
+  const description = `${chapterContent.title} — 视频课程第 ${chapter} 节 · ${chapterContent.duration} 分钟`;
 
   return {
     title: chapterContent.title,
-    description: `${chapterContent.title} — ${slug} 课程第 ${chapter} 节`,
+    description,
+    keywords: [chapterContent.title, "视频课程", "AI教程", "Claude", "在线学习"],
+    alternates: { canonical: chapterUrl },
+    openGraph: {
+      title: chapterContent.title,
+      description,
+      type: "video.other",
+      url: chapterUrl,
+      locale: "zh_CN",
+      siteName: "林逍遥 AI",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: chapterContent.title,
+      description,
+    },
   };
 }
 

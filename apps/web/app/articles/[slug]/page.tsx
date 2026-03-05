@@ -35,16 +35,34 @@ export async function generateMetadata({
   const article = await getArticleBySlug(slug);
   if (!article) return {};
 
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
+  const articleUrl = `${BASE_URL}/articles/${slug}`;
+
   return {
     title: article.title,
     description: article.summary,
+    keywords: [...article.tags, "Claude", "AI教程", "人工智能"].filter(
+      (v, i, a) => a.indexOf(v) === i,
+    ),
+    alternates: {
+      canonical: articleUrl,
+    },
     openGraph: {
       title: article.title,
       description: article.summary,
       type: "article",
       publishedTime: article.date,
       tags: article.tags,
+      url: articleUrl,
+      locale: "zh_CN",
+      siteName: "林逍遥 AI",
       images: article.coverUrl ? [article.coverUrl] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.summary,
     },
   };
 }
@@ -69,14 +87,24 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
   const BASE_URL =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://lingxiaoyao.cn";
 
-  const jsonLd = {
+  const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.summary,
+    keywords: article.tags.join(", "),
     datePublished: article.date,
+    dateModified: article.date,
     url: `${BASE_URL}/articles/${slug}`,
     image: article.coverUrl,
+    inLanguage: "zh-CN",
+    ...(article.series && {
+      isPartOf: {
+        "@type": "CreativeWorkSeries",
+        name: article.series,
+        url: `${BASE_URL}/articles?series=${encodeURIComponent(article.series)}`,
+      },
+    }),
     author: {
       "@type": "Person",
       name: "林逍遥",

@@ -1,0 +1,210 @@
+---
+title: "21天学习Claude - Day 12：结构化输出——表格、JSON和Markdown"
+date: "2026-03-12"
+tags: ["Claude", "结构化输出", "Markdown"]
+series: "21天学习Claude"
+sortOrder: 12
+isFree: true
+summary: "第十二天：Claude能按你要求的格式输出内容。掌握表格、JSON、Markdown等结构化输出技巧，让信息组织更专业。"
+---
+
+# 第十二天：让输出格式为你所用
+
+你有没有遇到过这种情况：Claude 的回答内容很好，但格式不对——你想要表格它给了你文字，你想要列表它给了你段落？今天我们来解决这个问题，学会让 Claude 精确地按你要求的格式输出。
+
+## 为什么格式很重要
+
+同样的信息，不同的格式服务于不同的目的。纯文本适合阅读，表格适合对比，JSON 适合系统间传递数据，Markdown 适合生成文档。选对格式，信息的价值能翻倍。
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%">
+  <rect x="10" y="10" width="700" height="220" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="360" y="44" text-anchor="middle" fill="#0f172a" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">四种常见输出格式对比</text>
+  <rect x="25" y="65" width="155" height="145" rx="12" fill="#6366f1"/>
+  <text x="102" y="95" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">纯文本</text>
+  <text x="102" y="120" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="system-ui, sans-serif">自然流畅的段落</text>
+  <text x="102" y="148" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">适合：邮件、报告</text>
+  <text x="102" y="166" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">阅读体验好</text>
+  <text x="102" y="192" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="system-ui, sans-serif">不便于数据处理</text>
+  <rect x="195" y="65" width="155" height="145" rx="12" fill="#3b82f6"/>
+  <text x="272" y="95" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">表格</text>
+  <text x="272" y="120" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="system-ui, sans-serif">行列结构化数据</text>
+  <text x="272" y="148" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">适合：对比、汇总</text>
+  <text x="272" y="166" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">一目了然</text>
+  <text x="272" y="192" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="system-ui, sans-serif">可直接粘贴到Excel</text>
+  <rect x="365" y="65" width="155" height="145" rx="12" fill="#22c55e"/>
+  <text x="442" y="95" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">JSON</text>
+  <text x="442" y="120" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="system-ui, sans-serif">键值对结构数据</text>
+  <text x="442" y="148" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">适合：数据交换</text>
+  <text x="442" y="166" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">程序可直接读取</text>
+  <text x="442" y="192" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="system-ui, sans-serif">非技术人员不易读</text>
+  <rect x="535" y="65" width="155" height="145" rx="12" fill="#f59e0b"/>
+  <text x="612" y="95" text-anchor="middle" fill="white" font-size="15" font-weight="bold" font-family="system-ui, sans-serif">Markdown</text>
+  <text x="612" y="120" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="system-ui, sans-serif">轻量排版标记</text>
+  <text x="612" y="148" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">适合：文档、笔记</text>
+  <text x="612" y="166" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="system-ui, sans-serif">兼顾可读与排版</text>
+  <text x="612" y="192" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="system-ui, sans-serif">可转为Word/PDF</text>
+</svg>
+</div>
+
+## 如何指定输出格式
+
+让 Claude 按特定格式输出，关键在于**明确告诉它你要什么**。以下是一些实用的格式指定方法。
+
+### 表格输出
+
+```
+请用Markdown表格对比以下三款手机的参数：iPhone 16 Pro、华为Mate 70 Pro、三星Galaxy S25 Ultra
+
+表格列：品牌型号、处理器、屏幕尺寸、电池容量、起售价、主要卖点
+```
+
+Claude 会输出整齐的 Markdown 表格，你可以直接复制粘贴到文档或笔记中。
+
+### JSON 输出
+
+当你需要结构化的数据用于其他工具时，JSON 格式最合适：
+
+```
+请将以下产品信息整理为JSON格式：
+- 产品名：智能台灯
+- 价格：299元
+- 颜色：白色、黑色、木纹
+- 功能：调光、定时、语音控制
+- 重量：1.2kg
+
+要求：字段名使用英文驼峰命名
+```
+
+### Markdown 文档
+
+```
+请用Markdown格式写一份产品需求文档，包含：
+- 一级标题：产品名称
+- 二级标题：需求背景、目标用户、核心功能、非功能需求
+- 核心功能部分用有序列表
+- 重点内容用加粗标注
+```
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg" style="max-width:640px;width:100%">
+  <rect x="10" y="10" width="620" height="260" rx="16" fill="#fefce8" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="320" y="44" text-anchor="middle" fill="#92400e" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">格式指定方法速查表</text>
+  <rect x="30" y="60" width="280" height="44" rx="8" fill="#6366f1"/>
+  <text x="170" y="87" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">方法一：直接说明格式名称</text>
+  <rect x="330" y="60" width="280" height="44" rx="8" fill="white" stroke="#6366f1" stroke-width="1"/>
+  <text x="470" y="82" text-anchor="middle" fill="#334155" font-size="11" font-family="system-ui, sans-serif">「请用表格/JSON/列表格式输出」</text>
+  <text x="470" y="96" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">简单直接，适合常见格式</text>
+  <rect x="30" y="116" width="280" height="44" rx="8" fill="#3b82f6"/>
+  <text x="170" y="143" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">方法二：给出格式示例</text>
+  <rect x="330" y="116" width="280" height="44" rx="8" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="470" y="138" text-anchor="middle" fill="#334155" font-size="11" font-family="system-ui, sans-serif">「按照以下格式输出：[示例]」</text>
+  <text x="470" y="152" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">最精确，适合自定义格式</text>
+  <rect x="30" y="172" width="280" height="44" rx="8" fill="#22c55e"/>
+  <text x="170" y="199" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">方法三：指定字段和结构</text>
+  <rect x="330" y="172" width="280" height="44" rx="8" fill="white" stroke="#22c55e" stroke-width="1"/>
+  <text x="470" y="194" text-anchor="middle" fill="#334155" font-size="11" font-family="system-ui, sans-serif">「包含：标题/日期/摘要/标签」</text>
+  <text x="470" y="208" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">灵活，适合复杂文档</text>
+  <rect x="30" y="228" width="280" height="44" rx="8" fill="#f59e0b"/>
+  <text x="170" y="255" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="system-ui, sans-serif">方法四：用XML标签约束</text>
+  <rect x="330" y="228" width="280" height="44" rx="8" fill="white" stroke="#f59e0b" stroke-width="1"/>
+  <text x="470" y="250" text-anchor="middle" fill="#334155" font-size="11" font-family="system-ui, sans-serif">「用&lt;output_format&gt;标签指定」</text>
+  <text x="470" y="264" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">最强大，配合结构化Prompt</text>
+</svg>
+</div>
+
+## 高级技巧：模板输出
+
+如果你经常需要相同格式的输出，可以给 Claude 定义一个模板：
+
+```
+请按照以下模板为每个团队成员生成月度绩效评语：
+
+【姓名】：___
+【岗位】：___
+【本月亮点】：（1-2句话描述突出表现）
+【改进建议】：（1-2句话描述改进方向）
+【综合评级】：A/B/C/D
+【主管建议】：（一句话总结）
+
+需要评价的成员：张三（设计师）、李四（前端开发）、王五（产品经理）
+```
+
+这种模板化的方式特别适合批量生成内容，格式高度统一。
+
+## 实际应用场景
+
+<div style="text-align:center;margin:24px 0">
+<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%">
+  <rect x="10" y="10" width="680" height="220" rx="16" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="350" y="44" text-anchor="middle" fill="#14532d" font-size="17" font-weight="bold" font-family="system-ui, sans-serif">结构化输出的实际应用</text>
+  <rect x="30" y="65" width="200" height="145" rx="12" fill="white" stroke="#6366f1" stroke-width="1.5"/>
+  <circle cx="130" cy="95" r="18" fill="#6366f1"/>
+  <text x="130" y="100" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">1</text>
+  <text x="130" y="128" text-anchor="middle" fill="#4338ca" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">工作报表</text>
+  <text x="130" y="148" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">周报/月报/数据汇总</text>
+  <text x="130" y="166" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">→ 表格 + Markdown</text>
+  <text x="130" y="194" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">直接粘贴到协作工具</text>
+  <rect x="250" y="65" width="200" height="145" rx="12" fill="white" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="350" cy="95" r="18" fill="#22c55e"/>
+  <text x="350" y="100" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">2</text>
+  <text x="350" y="128" text-anchor="middle" fill="#15803d" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">数据导出</text>
+  <text x="350" y="148" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">数据库/API/系统对接</text>
+  <text x="350" y="166" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">→ JSON / CSV</text>
+  <text x="350" y="194" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">程序直接读取使用</text>
+  <rect x="470" y="65" width="200" height="145" rx="12" fill="white" stroke="#f59e0b" stroke-width="1.5"/>
+  <circle cx="570" cy="95" r="18" fill="#f59e0b"/>
+  <text x="570" y="100" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">3</text>
+  <text x="570" y="128" text-anchor="middle" fill="#b45309" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">文档生成</text>
+  <text x="570" y="148" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">产品文档/使用手册</text>
+  <text x="570" y="166" text-anchor="middle" fill="#64748b" font-size="11" font-family="system-ui, sans-serif">→ Markdown + HTML</text>
+  <text x="570" y="194" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui, sans-serif">转换为PDF/Word分享</text>
+</svg>
+</div>
+
+**场景一：会议纪要**
+
+```
+请将以下会议录音文字稿整理为会议纪要，格式要求：
+- 会议主题
+- 参会人员
+- 讨论要点（编号列表）
+- 决议事项（表格：事项/负责人/截止日期）
+- 待跟进问题
+```
+
+**场景二：竞品分析**
+
+```
+请将以下竞品信息整理为JSON数组，每个竞品包含：
+name（名称）、price（价格）、features（功能列表）、
+pros（优点）、cons（缺点）、rating（评分1-10）
+```
+
+**场景三：技术文档**
+
+```
+请用Markdown格式编写API文档，包含：
+## 接口名称
+### 请求方式
+### 请求参数（表格）
+### 返回示例（代码块）
+### 错误码说明（表格）
+```
+
+## 格式转换技巧
+
+Claude 还是一个出色的格式转换器。你可以让它在不同格式之间互相转换：
+
+- 「把这段 JSON 转成 Markdown 表格」
+- 「把这个表格数据转成 CSV 格式」
+- 「把这份会议纪要从纯文本转成带格式的 Markdown」
+- 「把这个 HTML 表格提取为 JSON 数据」
+
+## 今日小结
+
+掌握结构化输出是提升 Claude 使用效率的关键一步。记住三个要点：**明确告知格式名称**、**给出示例或模板**、**指定字段和约束**。当你养成了指定输出格式的习惯，Claude 就能成为你真正的文档工厂。
+
+## 明天预告
+
+明天我们要解锁 Claude 的一个超级能力——处理超长文本。如何高效阅读一本书、分析一份长报告、对比多篇论文？Claude 的长上下文窗口让这一切变得轻而易举。

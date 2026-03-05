@@ -130,7 +130,9 @@ jobs:
             -a ${{ secrets.TENCENT_SECRET_ID }} \
             -s ${{ secrets.TENCENT_SECRET_KEY }} \
             -b ${{ secrets.TENCENT_COS_BUCKET }} \
-            -r ${{ secrets.TENCENT_COS_REGION }}
+            -r ${{ secrets.TENCENT_COS_REGION }} \
+            --retry 5 \
+            --timeout 300
 
       - name: Generate latest.json
         run: |
@@ -179,24 +181,48 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
 
+          upload_with_retry() {
+            local src="$1" dest="$2"
+            for i in 1 2 3; do
+              echo "Uploading $(basename "$src") (attempt $i/3)..."
+              if coscmd upload "$src" "$dest"; then
+                echo "Upload succeeded."
+                return 0
+              fi
+              echo "Attempt $i failed, retrying in 10s..."
+              sleep 10
+            done
+            echo "ERROR: Failed to upload $(basename "$src") after 3 attempts"
+            return 1
+          }
+
           # Upload macOS artifacts (update bundle + signature + DMG)
           for f in artifacts/macos/*.app.tar.gz artifacts/macos/*.app.tar.gz.sig artifacts/macos/*.dmg; do
-            [ -f "$f" ] && coscmd upload "$f" "/desktop/releases/$VERSION/$(basename "$f")"
+            [ -f "$f" ] && upload_with_retry "$f" "/desktop/releases/$VERSION/$(basename "$f")"
           done
 
           # Upload Windows artifacts (NSIS exe + signature)
           for f in artifacts/windows/*.exe artifacts/windows/*.exe.sig; do
-            [ -f "$f" ] && coscmd upload "$f" "/desktop/releases/$VERSION/$(basename "$f")"
+            [ -f "$f" ] && upload_with_retry "$f" "/desktop/releases/$VERSION/$(basename "$f")"
           done
 
       - name: Upload latest installers to COS (for website download links)
         run: |
+          upload_with_retry() {
+            local src="$1" dest="$2"
+            for i in 1 2 3; do
+              if coscmd upload "$src" "$dest"; then return 0; fi
+              echo "Retry $i/3 in 10s..."; sleep 10
+            done
+            return 1
+          }
+
           # Overwrite /desktop/latest/ with the newest installers (stable filenames)
           for f in artifacts/macos/*.dmg; do
-            [ -f "$f" ] && coscmd upload "$f" "/desktop/latest/林逍遥AI_universal.dmg"
+            [ -f "$f" ] && upload_with_retry "$f" "/desktop/latest/林逍遥AI_universal.dmg"
           done
           for f in artifacts/windows/*-setup.exe; do
-            [ -f "$f" ] && coscmd upload "$f" "/desktop/latest/林逍遥AI_x64-setup.exe"
+            [ -f "$f" ] && upload_with_retry "$f" "/desktop/latest/林逍遥AI_x64-setup.exe"
           done
 
       - name: Upload latest.json to COS
