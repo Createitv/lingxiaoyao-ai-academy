@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { withDatabaseFallback } from "@/lib/db/safe-query";
 
 interface ArticleListItem {
   id: string;
@@ -48,10 +49,15 @@ function mapArticle(a: {
 }
 
 export async function getAllArticles(): Promise<ArticleListItem[]> {
-  const articles = await prisma.article.findMany({
-    where: { publishedAt: { not: null }, series: null },
-    orderBy: { publishedAt: "desc" },
-  });
+  const articles = await withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { publishedAt: { not: null }, series: null },
+        orderBy: { publishedAt: "desc" },
+      }),
+    [],
+    "getAllArticles",
+  );
 
   return articles.map(mapArticle);
 }
@@ -59,10 +65,15 @@ export async function getAllArticles(): Promise<ArticleListItem[]> {
 export async function getSeriesArticles(
   seriesName: string,
 ): Promise<ArticleListItem[]> {
-  const articles = await prisma.article.findMany({
-    where: { series: seriesName, publishedAt: { not: null } },
-    orderBy: { sortOrder: "asc" },
-  });
+  const articles = await withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { series: seriesName, publishedAt: { not: null } },
+        orderBy: { sortOrder: "asc" },
+      }),
+    [],
+    "getSeriesArticles",
+  );
 
   return articles.map(mapArticle);
 }
@@ -70,9 +81,14 @@ export async function getSeriesArticles(
 export async function getSeriesArticleBySlug(
   slug: string,
 ): Promise<ArticleDetail | null> {
-  const article = await prisma.article.findFirst({
-    where: { slug, series: { not: null }, publishedAt: { not: null } },
-  });
+  const article = await withDatabaseFallback(
+    () =>
+      prisma.article.findFirst({
+        where: { slug, series: { not: null }, publishedAt: { not: null } },
+      }),
+    null,
+    "getSeriesArticleBySlug",
+  );
 
   if (!article) return null;
 
@@ -85,29 +101,44 @@ export async function getSeriesArticleBySlug(
 export async function getArticlesBySeries(
   series: string,
 ): Promise<ArticleListItem[]> {
-  const articles = await prisma.article.findMany({
-    where: { series, publishedAt: { not: null } },
-    orderBy: { sortOrder: "asc" },
-  });
+  const articles = await withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { series, publishedAt: { not: null } },
+        orderBy: { sortOrder: "asc" },
+      }),
+    [],
+    "getArticlesBySeries",
+  );
 
   return articles.map(mapArticle);
 }
 
 export async function getAllArticleSlugs(): Promise<string[]> {
-  const articles = await prisma.article.findMany({
-    where: { publishedAt: { not: null } },
-    select: { slug: true },
-  });
+  const articles = await withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true },
+      }),
+    [],
+    "getAllArticleSlugs",
+  );
   return articles.map((a) => a.slug);
 }
 
 export async function getAllArticleSlugsWithDates(): Promise<
   { slug: string; updatedAt: Date }[]
 > {
-  return prisma.article.findMany({
-    where: { publishedAt: { not: null } },
-    select: { slug: true, updatedAt: true },
-  });
+  return withDatabaseFallback(
+    () =>
+      prisma.article.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+    [],
+    "getAllArticleSlugsWithDates",
+  );
 }
 
 export async function getLatestArticles(
@@ -120,9 +151,14 @@ export async function getLatestArticles(
 export async function getArticleBySlug(
   slug: string,
 ): Promise<ArticleDetail | null> {
-  const article = await prisma.article.findFirst({
-    where: { slug, publishedAt: { not: null } },
-  });
+  const article = await withDatabaseFallback(
+    () =>
+      prisma.article.findFirst({
+        where: { slug, publishedAt: { not: null } },
+      }),
+    null,
+    "getArticleBySlug",
+  );
 
   if (!article) return null;
 

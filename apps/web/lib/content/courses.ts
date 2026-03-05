@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { withDatabaseFallback } from "@/lib/db/safe-query";
 
 interface ChapterItem {
   index: number;
@@ -23,11 +24,16 @@ interface CourseWithChapters {
 }
 
 export async function getCourses(): Promise<CourseWithChapters[]> {
-  const courses = await prisma.course.findMany({
-    where: { publishedAt: { not: null } },
-    orderBy: { updatedAt: "desc" },
-    include: { chapters: { orderBy: { index: "asc" } } },
-  });
+  const courses = await withDatabaseFallback(
+    () =>
+      prisma.course.findMany({
+        where: { publishedAt: { not: null } },
+        orderBy: { updatedAt: "desc" },
+        include: { chapters: { orderBy: { index: "asc" } } },
+      }),
+    [],
+    "getCourses",
+  );
 
   return courses.map((c) => ({
     id: c.id,
@@ -51,20 +57,30 @@ export async function getCourses(): Promise<CourseWithChapters[]> {
 }
 
 export async function getAllCourseSlugs(): Promise<string[]> {
-  const courses = await prisma.course.findMany({
-    where: { publishedAt: { not: null } },
-    select: { slug: true },
-  });
+  const courses = await withDatabaseFallback(
+    () =>
+      prisma.course.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true },
+      }),
+    [],
+    "getAllCourseSlugs",
+  );
   return courses.map((c) => c.slug);
 }
 
 export async function getCourseBySlug(
   slug: string,
 ): Promise<CourseWithChapters | null> {
-  const course = await prisma.course.findFirst({
-    where: { slug, publishedAt: { not: null } },
-    include: { chapters: { orderBy: { index: "asc" } } },
-  });
+  const course = await withDatabaseFallback(
+    () =>
+      prisma.course.findFirst({
+        where: { slug, publishedAt: { not: null } },
+        include: { chapters: { orderBy: { index: "asc" } } },
+      }),
+    null,
+    "getCourseBySlug",
+  );
 
   if (!course) return null;
 
@@ -99,16 +115,26 @@ export async function getChapterContent(
   duration: number;
   content?: string;
 } | null> {
-  const course = await prisma.course.findFirst({
-    where: { slug: courseSlug },
-    select: { id: true },
-  });
+  const course = await withDatabaseFallback(
+    () =>
+      prisma.course.findFirst({
+        where: { slug: courseSlug },
+        select: { id: true },
+      }),
+    null,
+    "getChapterContent.course",
+  );
 
   if (!course) return null;
 
-  const chapter = await prisma.chapter.findFirst({
-    where: { courseId: course.id, index: chapterIndex },
-  });
+  const chapter = await withDatabaseFallback(
+    () =>
+      prisma.chapter.findFirst({
+        where: { courseId: course.id, index: chapterIndex },
+      }),
+    null,
+    "getChapterContent.chapter",
+  );
 
   if (!chapter) return null;
 

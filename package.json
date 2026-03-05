@@ -1,12 +1,14 @@
 {
   "name": "lingxiaoyao",
   "private": true,
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
     "dev": "rm -rf apps/web/.next && turbo run dev",
     "dev:web": "rm -rf apps/web/.next && turbo run dev --filter=web",
     "dev:app": "turbo run dev --filter=desktop",
     "dev:mp": "turbo run dev --filter=miniprogram",
-    "build": "turbo run build",
+    "build": "turbo run build --filter=web",
+    "build:all": "turbo run build",
     "build:web": "turbo run build --filter=web",
     "build:mp": "turbo run build --filter=miniprogram",
     "build:desktop": "BUILD_TARGET=desktop turbo run build --filter=web",
