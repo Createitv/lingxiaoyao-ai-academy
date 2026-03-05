@@ -51,6 +51,17 @@ apps/web/public/search-index.json
 # Generated illustrations (uploaded to COS)
 illustrations/
 
+# Local content generation scripts
+scripts/seed-claude-tutorials.ts
+scripts/update-beginner-tutorials.ts
+scripts/update-intermediate-tutorials.ts
+scripts/update-advanced-tutorials.ts
+scripts/generate-article-svgs.ts
+scripts/upload-illustrations.ts
+scripts/svg-templates/
+scripts/migrate-content-to-db.ts
+token-management-article.html
+
 # Claude Code
 CONTEXT.md
 .claude/
