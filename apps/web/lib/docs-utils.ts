@@ -1,5 +1,3 @@
-import GithubSlugger from "github-slugger";
-
 export interface TocItem {
   id: string;
   text: string;
@@ -7,11 +5,36 @@ export interface TocItem {
 }
 
 /**
+ * Minimal slug generator compatible with github-slugger / rehype-slug output.
+ * Inlined to avoid ESM-only github-slugger package causing webpack SSR failures.
+ */
+function createSlugger() {
+  const occurrences = new Map<string, number>();
+  return {
+    slug(value: string): string {
+      let s = value
+        .toLowerCase()
+        .trim()
+        .replace(/<[^>]*>/g, "")
+        .replace(
+          /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g,
+          "",
+        )
+        .replace(/\s/g, "-");
+
+      const count = occurrences.get(s) ?? 0;
+      occurrences.set(s, count + 1);
+      if (count > 0) s += `-${count}`;
+      return s;
+    },
+  };
+}
+
+/**
  * Extract h2/h3 headings from raw markdown content for Table of Contents.
- * Uses github-slugger to generate IDs matching rehype-slug output.
  */
 export function extractTocHeadings(markdown: string): TocItem[] {
-  const slugger = new GithubSlugger();
+  const slugger = createSlugger();
   const items: TocItem[] = [];
   const lines = markdown.split("\n");
   let inCodeBlock = false;
