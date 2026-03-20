@@ -1,4 +1,5 @@
 FROM node:20-alpine AS base
+RUN apk add --no-cache libc6-compat openssl
 RUN corepack enable && corepack prepare pnpm@10.12.4 --activate
 
 # ─── deps stage ─────────────────────────────────────────────
@@ -22,7 +23,7 @@ COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 COPY . .
 
 # Generate Prisma client then build Next.js
-RUN cd apps/web && npx prisma generate
+RUN pnpm --filter web exec prisma generate
 RUN pnpm --filter web build
 
 # ─── runner stage ───────────────────────────────────────────
@@ -31,18 +32,19 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=8080
+ENV HOSTNAME=0.0.0.0
 
-RUN corepack enable && corepack prepare pnpm@10.12.4 --activate
+RUN apk add --no-cache openssl
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 
 # Copy standalone output
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 # Prisma: copy generated client and schema
-COPY --from=builder /app/apps/web/node_modules/.prisma ./apps/web/node_modules/.prisma
-COPY --from=builder /app/apps/web/prisma ./apps/web/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/node_modules/.prisma ./apps/web/node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/prisma ./apps/web/prisma
 
 USER nextjs
 

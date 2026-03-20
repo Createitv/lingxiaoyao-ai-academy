@@ -1,8 +1,10 @@
 **/.git
 **/.next
 **/node_modules
-**/.env*.local
+**/.env
+**/.env.*
 **/out
 **/.turbo
 **/dist
 **/.DS_Store
+apps/web/tsconfig.tsbuildinfo
